@@ -60,29 +60,26 @@ func (ins *Trie) Build(ks strKeySlice) {
 				child = &Node{
 					code:   r,
 					isLeaf: i == len(key)-1,
+					depth:  father.depth + 1,
+					father: father,
 				}
-
 				if child.isLeaf {
 					child.output = append(child.output, rune(len(key)))
 				}
-
-				ins.buildNode(child, father)
+				ins.count++
+				father.addChild(child)
 			}
 			father = child
 		}
 	}
 }
 
-func (ins *Trie) buildNode(t, father *Node) {
-	t.depth = father.depth + 1
-	t.father = father
-	//更新 fail 指针
-	t.fail = ins.g(t)
-	if len(t.fail.output) > 0 {
-		t.output = append(t.output, t.fail.output...)
+func (ins *Trie) f(node *Node) {
+	fail := ins.g(node)
+	if len(fail.output) > 0 {
+		node.output = append(node.output, fail.output...)
 	}
-	ins.count++
-	father.addChild(t)
+	node.fail = fail
 }
 
 func (ins *Trie) g(node *Node) (fail *Node) {
@@ -115,7 +112,14 @@ func (ins *Trie) BFS(iter func(node *Node) bool) {
 }
 
 func (ins *Trie) Print() {
-	printTree(ins.root, 0)
+	ins.BFS(func(node *Node) bool {
+		if node.Root() {
+			return false
+		}
+		fmt.Print("code: ", node.code)
+		fmt.Println("fail code: ", node.fail.code)
+		return false
+	})
 }
 
 func printTree(node *Node, lv int) {

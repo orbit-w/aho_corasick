@@ -1,7 +1,6 @@
 package ac
 
 import (
-	"fmt"
 	"github.com/orbit-w/aho_corasick/lib/number_utils"
 )
 
@@ -18,16 +17,18 @@ type DAT struct {
 }
 
 func (ins *DAT) Build() {
+	ins.size = InitSize
 	ins.base = make([]int, InitSize)
 	ins.check = make([]int, InitSize)
-	ins.base[0] = RootState
+	ins.base[0] = StateRoot
 	return
 }
 
 func (ins *DAT) Find(keyword []rune) bool {
 	var index int
 	for _, r := range keyword {
-		temp := ins.state(index) + int(r)
+		temp := number_utils.ABS[int](ins.base[index]) + int(r)
+		//TODO: 有问题！
 		if ins.check[temp] != index {
 			return false
 		}
@@ -58,10 +59,6 @@ func (ins *DAT) Size() int {
 	return ins.size
 }
 
-func (ins *DAT) state(index int) int {
-	return number_utils.ABS[int](ins.base[index])
-}
-
 //setState 更新 base[state]
 func (ins *DAT) setState(index, state int, isLeaf bool) {
 	if isLeaf {
@@ -69,18 +66,4 @@ func (ins *DAT) setState(index, state int, isLeaf bool) {
 	} else {
 		ins.base[index] = state
 	}
-}
-
-//setCheck 更新check[index]
-func (ins *DAT) setCheck(father *Node, i int) {
-	if father.Root() {
-		ins.check[i] = RootIndex
-	} else {
-		ins.check[i] = father.index
-	}
-}
-
-func Print(dat *DAT) {
-	fmt.Println("base: ", dat.base)
-	fmt.Println("check: ", dat.check)
 }

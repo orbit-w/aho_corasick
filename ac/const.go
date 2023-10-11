@@ -7,9 +7,9 @@ package ac
 */
 
 const (
-	RootState = 1
+	StateRoot = 1
 
-	RootIndex = -1
+	IndexRoot = 0
 
 	InitSize = 1024
 )
