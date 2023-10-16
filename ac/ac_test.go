@@ -67,7 +67,8 @@ func TestAC_MultiPatternSearch(t *testing.T) {
 	ac := new(AC)
 	ac.Init(ks)
 	input := []rune("ahishers")
-	for _, r := range ac.MultiPatternSearch(input) {
+	patterns := ac.MultiPatternSearch(input)
+	for _, r := range patterns {
 		fmt.Println(string(r.Pattern))
 		fmt.Println(r.Start)
 	}
@@ -90,33 +91,6 @@ func TestDAT_Fetch(t *testing.T) {
 
 	ac := new(AC)
 	ac.Init(ks)
-}
-
-func TestDAT_Find(t *testing.T) {
-	keywords := [][]string{
-		{"清", "华"},
-		{"清", "华", "大", "学"},
-		{"清", "新"},
-		{"中", "华"},
-		{"华", "人"},
-	}
-	ks := strKeySlice{}
-	for _, keyword := range keywords {
-		dk := make(strKey, 0)
-		for _, k := range keyword {
-			dk = append(dk, toRune(k))
-		}
-		ks = append(ks, dk)
-	}
-	ac := new(AC)
-	ac.Init(ks)
-
-	//assert.True(t, ac.Find([]rune{1, 2}))       //"清", "华"
-	//assert.False(t, ac.Find([]rune{1, 6}))      //"清", "中"
-	//assert.True(t, ac.Find([]rune{1, 5}))       //"清", "新"
-	//assert.True(t, ac.Find([]rune{6, 2}))       //“中”, "华"
-	//assert.True(t, ac.Find([]rune{2, 7}))       //"华", "人"
-	//assert.True(t, ac.Find([]rune{1, 2, 3, 4})) //"清", "华", "大", "学"
 }
 
 func toString(b rune) string {

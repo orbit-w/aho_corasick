@@ -11,5 +11,5 @@ const (
 
 	IndexRoot = 0
 
-	InitSize = 1024
+	InitSize = 16
 )

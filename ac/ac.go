@@ -93,18 +93,23 @@ func (ins *AC) Build(trie *Trie) {
 
 		//确定最佳转移基数
 		state := number_utils.ABS[int](dat.base[father.index])
+		var max int
 		for {
 		COMPLETE:
 			for i := range father.children {
 				node := father.children[i]
 				pos := state + int(node.code)
-				if dat.check[pos] != 0 {
+				max = number_utils.Max[int](max, pos)
+				if pos < dat.len && dat.check[pos] != 0 {
 					state++
 					goto COMPLETE
 				}
 			}
 			break
 		}
+
+		dat.resize(max + 1)
+		ins.resize(dat.Cap())
 
 		dat.setState(father.index, state, father.isLeaf)
 
@@ -120,26 +125,40 @@ func (ins *AC) Build(trie *Trie) {
 			dat.setState(index, state, node.isLeaf)
 			//将 Fail Node 压缩到 fail slice 中
 			ins.fail[index] = node.fail.index
-			if node.Exist() {
-				output := make([]rune, len(node.output))
-				copy(output, node.output)
-				ins.output[index] = output
-			}
+			ins.inheritOutput(node, index)
 		}
 		return
 	})
 
-	ins.base = dat.base
-	ins.check = dat.check
-	ins.size = dat.size
+	ins.complete(dat)
 }
 
-func (ins *AC) setOutput(node *Node, index int) {
+func (ins *AC) complete(dat *DAT) {
+	length := dat.Length()
+	ins.base = make([]int, length)
+	copy(ins.base, dat.base)
+	ins.check = make([]int, length)
+	copy(ins.check, dat.check)
+	ins.fail = ins.fail[:length]
+	ins.size = length
+}
+
+func (ins *AC) inheritOutput(node *Node, index int) {
 	if node.Exist() {
-		output := make([]rune, len(ins.output))
+		output := make([]rune, len(node.output))
 		copy(output, node.output)
 		ins.output[index] = output
 	}
+}
+
+func (ins *AC) resize(size int) {
+	if len(ins.fail) >= size {
+		return
+	}
+
+	newFail := make([]int, size)
+	copy(newFail, ins.base)
+	ins.fail = newFail
 }
 
 func (ins *AC) Print() {

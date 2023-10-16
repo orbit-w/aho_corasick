@@ -1,7 +1,7 @@
 package ac
 
 import (
-	"github.com/orbit-w/aho_corasick/lib/number_utils"
+	"github.com/orbit-w/aho_corasick/lib/math"
 )
 
 /*
@@ -11,13 +11,14 @@ import (
 */
 
 type DAT struct {
-	size  int   //容量
+	len   int
+	cap   int
 	base  []int //转移基数
 	check []int //dat 映射父子节点唯一关系性
 }
 
 func (ins *DAT) Build() {
-	ins.size = InitSize
+	ins.len = InitSize
 	ins.base = make([]int, InitSize)
 	ins.check = make([]int, InitSize)
 	ins.base[0] = StateRoot
@@ -26,37 +27,47 @@ func (ins *DAT) Build() {
 
 func (ins *DAT) Find(keyword []rune) bool {
 	var index int
+	state := StateRoot
 	for _, r := range keyword {
-		temp := number_utils.ABS[int](ins.base[index]) + int(r)
-		//TODO: 有问题！
-		if ins.check[temp] != index {
+		i := state + int(r)
+		if ins.check[i] != state {
 			return false
 		}
-		index = temp
+		index = i
 	}
 	return ins.base[index] < 0
 }
 
-//Resize TODO: 调整容量方式？如何小范围调整不合适？
-func (ins *DAT) Resize(size int) {
-	if size <= ins.size {
+func (ins *DAT) resize(in int) {
+	if ins.cap >= in {
+		if ins.len < in {
+			ins.len = in
+		}
 		return
 	}
 
-	//deep copy
-	newBase := make([]int, size)
+	ins.cap = math.PowerOf2(in)
+	ins.len = in
+
+	ins.arrayCopy()
+}
+
+func (ins *DAT) arrayCopy() {
+	newBase := make([]int, ins.cap)
 	copy(newBase, ins.base)
 	ins.base = newBase
 
-	newCheck := make([]int, size)
+	newCheck := make([]int, ins.cap)
 	copy(newCheck, ins.check)
 	ins.check = newCheck
-
-	ins.size += size
 }
 
-func (ins *DAT) Size() int {
-	return ins.size
+func (ins *DAT) Length() int {
+	return ins.len
+}
+
+func (ins *DAT) Cap() int {
+	return ins.cap
 }
 
 //setState 更新 base[state]
@@ -66,4 +77,11 @@ func (ins *DAT) setState(index, state int, isLeaf bool) {
 	} else {
 		ins.base[index] = state
 	}
+}
+
+func (ins *DAT) free(index int) bool {
+	if index >= ins.len {
+		return false
+	}
+	return ins.check[index] == 0
 }

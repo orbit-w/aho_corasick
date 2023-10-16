@@ -23,3 +23,10 @@ func Min[T Integer](a, b T) T {
 	}
 	return b
 }
+
+func Max[T Integer](a, b T) T {
+	if a > b {
+		return a
+	}
+	return b
+}
