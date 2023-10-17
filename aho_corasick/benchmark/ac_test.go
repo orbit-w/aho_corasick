@@ -25,30 +25,7 @@ func TestAC_Fail(t *testing.T) {
 	}
 
 	ac := new(AC)
-	ac.Init(ks)
-	ac.Print()
-}
-
-func TestAC_AutomationInit(t *testing.T) {
-	keywords := [][]string{
-		{"清", "华"},
-		{"清", "华", "大", "学"},
-		{"清", "新"},
-		{"中", "华"},
-		{"华", "人"},
-	}
-	ks := strKeySlice{}
-
-	for _, keyword := range keywords {
-		dk := make(strKey, 0)
-		for _, k := range keyword {
-			dk = append(dk, toRune(k))
-		}
-		ks = append(ks, dk)
-	}
-	ac := new(AC)
-	ac.Init(ks)
-	//Print(ac.dat)
+	ac.Build(ks)
 	ac.Print()
 }
 
@@ -65,7 +42,7 @@ func TestAC_MultiPatternSearch(t *testing.T) {
 	}
 
 	ac := new(AC)
-	ac.Init(ks)
+	ac.Build(ks)
 	input := []rune("ahishers")
 	patterns := ac.MultiPatternSearch(input)
 	for _, r := range patterns {
@@ -90,27 +67,7 @@ func TestDAT_Fetch(t *testing.T) {
 	}
 
 	ac := new(AC)
-	ac.Init(ks)
-}
-
-func toString(b rune) string {
-	switch b {
-	case 1:
-		return "清"
-	case 2:
-		return "华"
-	case 3:
-		return "大"
-	case 4:
-		return "学"
-	case 5:
-		return "新"
-	case 6:
-		return "中"
-	case 7:
-		return "人"
-	}
-	return ""
+	ac.Build(ks)
 }
 
 func toRune(s string) rune {
