@@ -1,7 +1,8 @@
-package ac
+package benchmark
 
 import (
 	"fmt"
+	"github.com/orbit-w/aho_corasick/aho_corasick"
 	"testing"
 )
 
@@ -13,7 +14,7 @@ import (
 
 // h: 104, e: 101, s: 115, r: 114, i: 105
 func TestAC_Fail(t *testing.T) {
-	ks := strKeySlice{
+	ks := aho_corasick.StrKeySlice{
 		[]rune("he"),
 		[]rune("she"),
 		[]rune("hers"),
@@ -24,13 +25,13 @@ func TestAC_Fail(t *testing.T) {
 		fmt.Println(ks[i])
 	}
 
-	ac := new(AC)
+	ac := new(aho_corasick.AC)
 	ac.Build(ks)
 	ac.Print()
 }
 
 func TestAC_MultiPatternSearch(t *testing.T) {
-	ks := strKeySlice{
+	ks := aho_corasick.StrKeySlice{
 		[]rune("he"),
 		[]rune("she"),
 		[]rune("hers"),
@@ -41,7 +42,7 @@ func TestAC_MultiPatternSearch(t *testing.T) {
 		fmt.Println(ks[i])
 	}
 
-	ac := new(AC)
+	ac := new(aho_corasick.AC)
 	ac.Build(ks)
 	input := []rune("ahishers")
 	patterns := ac.MultiPatternSearch(input)
@@ -49,43 +50,23 @@ func TestAC_MultiPatternSearch(t *testing.T) {
 		fmt.Println(string(r.Pattern))
 		fmt.Println(r.Start)
 	}
-}
 
-func TestDAT_Fetch(t *testing.T) {
-	keywords := [][]rune{
-		strKey("abcf"),
-		strKey("abc"),
-		strKey("abcd"),
-		strKey("abed"),
-		strKey("abfdh"),
+	fmt.Println("===================================================")
+	//中文模式串匹配
+	input = []rune("听说独立日这部电影是美国人拍的")
+	ks = aho_corasick.StrKeySlice{
+		[]rune("独立"),
+		[]rune("独立日"),
 	}
-
-	ks := strKeySlice{}
-	for _, keyword := range keywords {
-		var dk strKey = keyword
-		ks = append(ks, dk)
-	}
-
-	ac := new(AC)
+	ac = new(aho_corasick.AC)
 	ac.Build(ks)
+	patterns = ac.MultiPatternSearch(input)
+	for _, r := range patterns {
+		fmt.Println(string(r.Pattern))
+		fmt.Println(r.Start)
+	}
 }
 
-func toRune(s string) rune {
-	switch s {
-	case "清":
-		return 1
-	case "华":
-		return 2
-	case "大":
-		return 3
-	case "学":
-		return 4
-	case "新":
-		return 5
-	case "中":
-		return 6
-	case "人":
-		return 7
-	}
-	return 0
+func Test_ACLoadAndSearch(t *testing.T) {
+	aho_corasick.LoadDict("./../../data/filter_dict.txt")
 }

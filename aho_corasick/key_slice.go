@@ -1,19 +1,19 @@
-package ac
+package aho_corasick
 
 /*
-   @Time: 2023/8/22 00:12
-   @Author: david
+   @Author: orbit-w
    @File: key_slice
+   @2023 10月 周二 18:56
 */
 
 import (
 	"github.com/orbit-w/aho_corasick/lib/number_utils"
 )
 
-type strKey []rune
-type strKeySlice []strKey
+type StrKey []rune
+type StrKeySlice []StrKey
 
-func (ins strKeySlice) Max() (max int) {
+func (ins StrKeySlice) Max() (max int) {
 	for i := range ins {
 		l := len(ins[i])
 		if l > 0 && l > max {
@@ -23,11 +23,11 @@ func (ins strKeySlice) Max() (max int) {
 	return
 }
 
-func (ins strKeySlice) Len() int {
+func (ins StrKeySlice) Len() int {
 	return len(ins)
 }
 
-func (ins strKeySlice) Less(i, j int) bool {
+func (ins StrKeySlice) Less(i, j int) bool {
 	min := number_utils.Min[int](len(ins[i]), len(ins[j]))
 	for k := 0; k < min; k++ {
 		if ins[i][k] != ins[j][k] {
@@ -37,6 +37,6 @@ func (ins strKeySlice) Less(i, j int) bool {
 	return len(ins[i]) < len(ins[j])
 }
 
-func (ins strKeySlice) Swap(i, j int) {
+func (ins StrKeySlice) Swap(i, j int) {
 	ins[i], ins[j] = ins[j], ins[i]
 }

@@ -1,11 +1,11 @@
-package ac
+package aho_corasick
 
 import "fmt"
 
 /*
-   @Time: 2023/8/22 00:06
-   @Author: david
+   @Author: orbit-w
    @File: trie
+   @2023 10月 周二 18:56
 */
 
 type Node struct {
@@ -46,7 +46,7 @@ type Trie struct {
 	root  *Node
 }
 
-func (ins *Trie) Build(ks strKeySlice) {
+func (ins *Trie) Build(ks StrKeySlice) {
 	ins.root = &Node{
 		isRoot: true,
 		depth:  0,

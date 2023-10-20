@@ -1,4 +1,4 @@
-package ac
+package aho_corasick
 
 import (
 	"github.com/orbit-w/aho_corasick/lib/math"
@@ -6,9 +6,9 @@ import (
 )
 
 /*
-   @Time: 2023/8/22 00:10
-   @Author: david
+   @Author: orbit-w
    @File: dat
+   @2023 10月 周二 18:56
 */
 
 type DAT struct {

@@ -1,9 +1,9 @@
-package ac
+package aho_corasick
 
 /*
-   @Time: 2023/8/22 00:05
-   @Author: david
+   @Author: orbit-w
    @File: const
+   @2023 10月 周二 18:56
 */
 
 const (

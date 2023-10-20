@@ -1,4 +1,4 @@
-package ac
+package aho_corasick
 
 import (
 	"fmt"
@@ -7,9 +7,9 @@ import (
 )
 
 /*
-   @Time: 2023/9/28 10:46
-   @Author: david
+   @Author: orbit-w
    @File: ac
+   @2023 10月 周二 18:56
 */
 
 type AC struct {
@@ -20,7 +20,7 @@ type AC struct {
 	output map[int][]rune
 }
 
-func (ins *AC) Build(keywords strKeySlice) {
+func (ins *AC) Build(keywords StrKeySlice) {
 	ins.output = make(map[int][]rune)
 
 	sort.Sort(keywords)
