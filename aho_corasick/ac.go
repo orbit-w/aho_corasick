@@ -13,11 +13,21 @@ import (
 */
 
 type AC struct {
-	size   int
+	cap    int
 	base   []int //转移基数
 	check  []int //dat 映射父子节点唯一关系性
 	fail   []int
 	output map[int][]rune
+}
+
+func New(keywords StrKeySlice) IAhoCorasick {
+	ins := new(AC)
+	ins.Build(keywords)
+	return ins
+}
+
+func (ins *AC) Cap() int {
+	return ins.cap
 }
 
 func (ins *AC) Build(keywords StrKeySlice) {
@@ -31,7 +41,7 @@ func (ins *AC) Build(keywords StrKeySlice) {
 	dat.Build(trie)
 
 	length := dat.Length()
-	ins.size = length
+	ins.cap = length
 	ins.base = make([]int, length)
 	copy(ins.base, dat.base)
 	ins.check = make([]int, length)
@@ -40,26 +50,61 @@ func (ins *AC) Build(keywords StrKeySlice) {
 	ins.build(trie)
 }
 
+func (ins *AC) Validate(input []rune) bool {
+	legal := true
+	ins.multiPatternMatching(input, func(res []rune, index int) (stop bool) {
+		legal = false
+		stop = true
+		return
+	})
+	return legal
+}
+
 type Result struct {
 	Pattern []rune
 	Start   int
 }
 
-//MultiPatternSearch 多模式匹配
-func (ins *AC) MultiPatternSearch(input []rune) []Result {
-	var (
-		index int //Node 数组下角标
-		state int //Node 转移因子
-	)
+func (ins *AC) FindAll(input []rune) []Result {
 	patterns := make([]Result, 0)
+	ins.multiPatternMatching(input, func(res []rune, index int) (stop bool) {
+		for i := range res {
+			r := res[i]
+			start := index - (int(r) - 1)
+			patterns = append(patterns, Result{
+				Pattern: input[start : index+1],
+				Start:   start,
+			})
+		}
+		return
+	})
+	return patterns
+}
+
+func (ins *AC) Replace(input []rune, repl rune) {
+	ins.multiPatternMatching(input, func(res []rune, index int) (stop bool) {
+		for _, r := range res {
+			for i := index - (int(r) - 1); i <= index; i++ {
+				input[i] = repl
+			}
+		}
+		return
+	})
+}
+
+func (ins *AC) multiPatternMatching(input []rune, iter func(res []rune, index int) (stop bool)) {
+	var (
+		index int
+		state int
+	)
 	state = StateRoot
 	for i, r := range input {
 		code := int(r)
 		for {
 			t := state + code
-			if ins.exist(t, state) {
+			if ins.Exist(t, index) {
 				index = t
-				state = number_utils.ABS[int](ins.base[index])
+				state = ins.State(index)
 				goto M
 			}
 
@@ -69,31 +114,31 @@ func (ins *AC) MultiPatternSearch(input []rune) []Result {
 			}
 
 			index = ins.fail[index]
-			state = number_utils.ABS[int](ins.base[index])
+			state = ins.State(index)
 		}
+		continue
 	M:
 		if info, ok := ins.output[index]; ok {
-			for _, l := range info {
-				start := i - (int(l) - 1)
-				patterns = append(patterns, Result{
-					Pattern: input[start : i+1],
-					Start:   start,
-				})
+			if iter(info, i) {
+				return
 			}
 		}
 	}
-	return patterns
 }
 
-func (ins *AC) exist(index, state int) bool {
-	if index >= ins.size {
+func (ins *AC) State(s int) int {
+	return number_utils.ABS[int](ins.base[s])
+}
+
+func (ins *AC) Exist(i, state int) bool {
+	if i >= ins.cap {
 		return false
 	}
-	return ins.check[index] == state
+	return ins.check[i] == state
 }
 
 func (ins *AC) build(trie *Trie) {
-	ins.fail = make([]int, ins.size)
+	ins.fail = make([]int, ins.cap)
 	trie.BFS(func(node *Node) (stop bool) {
 		if node.Root() {
 			return

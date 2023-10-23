@@ -12,24 +12,24 @@ import (
    @2023 10月 周二 18:56
 */
 
-func LoadDict(path string) error {
+func LoadDict(path string) (IAhoCorasick, error) {
 	file, err := os.Open(path)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer file.Close()
-	ac := new(AC)
-	return Load(ac, file)
+	return Load(file)
 }
 
-func Load(ac *AC, rd io.Reader) error {
+func Load(rd io.Reader) (IAhoCorasick, error) {
+	ac := new(AC)
 	buf := bufio.NewReader(rd)
 	sks := StrKeySlice{}
 	for {
 		line, _, err := buf.ReadLine()
 		if err != nil {
 			if err != io.EOF {
-				return err
+				return nil, err
 			}
 			break
 		}
@@ -37,5 +37,5 @@ func Load(ac *AC, rd io.Reader) error {
 	}
 
 	ac.Build(sks)
-	return nil
+	return ac, nil
 }

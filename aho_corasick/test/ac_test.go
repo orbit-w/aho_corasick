@@ -1,8 +1,10 @@
-package benchmark
+package test
 
 import (
 	"fmt"
 	"github.com/orbit-w/aho_corasick/aho_corasick"
+	"github.com/orbit-w/aho_corasick/lib/misc"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -25,9 +27,9 @@ func TestAC_Fail(t *testing.T) {
 		fmt.Println(ks[i])
 	}
 
-	ac := new(aho_corasick.AC)
-	ac.Build(ks)
+	ac := aho_corasick.New(ks)
 	ac.Print()
+	fmt.Println(rune('C'))
 }
 
 func TestAC_MultiPatternSearch(t *testing.T) {
@@ -38,14 +40,9 @@ func TestAC_MultiPatternSearch(t *testing.T) {
 		[]rune("his"),
 	}
 
-	for i := range ks {
-		fmt.Println(ks[i])
-	}
-
-	ac := new(aho_corasick.AC)
-	ac.Build(ks)
+	ac := aho_corasick.New(ks)
 	input := []rune("ahishers")
-	patterns := ac.MultiPatternSearch(input)
+	patterns := ac.FindAll(input)
 	for _, r := range patterns {
 		fmt.Println(string(r.Pattern))
 		fmt.Println(r.Start)
@@ -53,14 +50,13 @@ func TestAC_MultiPatternSearch(t *testing.T) {
 
 	fmt.Println("===================================================")
 	//中文模式串匹配
-	input = []rune("听说独立日这部电影是美国人拍的")
+	input = []rune("听说独立日日这部电影是美国人拍的")
 	ks = aho_corasick.StrKeySlice{
 		[]rune("独立"),
 		[]rune("独立日"),
 	}
-	ac = new(aho_corasick.AC)
-	ac.Build(ks)
-	patterns = ac.MultiPatternSearch(input)
+	ac = aho_corasick.New(ks)
+	patterns = ac.FindAll(input)
 	for _, r := range patterns {
 		fmt.Println(string(r.Pattern))
 		fmt.Println(r.Start)
@@ -68,5 +64,25 @@ func TestAC_MultiPatternSearch(t *testing.T) {
 }
 
 func Test_ACLoadAndSearch(t *testing.T) {
-	aho_corasick.LoadDict("./../../data/filter_dict.txt")
+	ac, err := aho_corasick.LoadDict("./../../data/filter_dict.txt")
+	assert.NoError(t, err)
+	fmt.Println(ac.Cap())
+	misc.PrintMem()
+}
+
+func Test_ACReplace(t *testing.T) {
+	ks := aho_corasick.StrKeySlice{
+		[]rune("he"),
+		[]rune("she"),
+		[]rune("hers"),
+		[]rune("his"),
+	}
+	ac := aho_corasick.New(ks)
+	input := []rune("ahisherssadwdshershis")
+	for _, v := range ac.FindAll(input) {
+		fmt.Println(string(v.Pattern))
+	}
+	ac.Replace(input, '*')
+	fmt.Println(string(input))
+	assert.Equal(t, "a*******sadwd********", string(input))
 }

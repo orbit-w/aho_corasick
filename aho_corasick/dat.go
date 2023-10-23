@@ -1,6 +1,7 @@
 package aho_corasick
 
 import (
+	"fmt"
 	"github.com/orbit-w/aho_corasick/lib/math"
 	"github.com/orbit-w/aho_corasick/lib/number_utils"
 )
@@ -13,13 +14,13 @@ import (
 
 type DAT struct {
 	len   int
-	cap   int
-	base  []int //转移基数
-	check []int //dat 映射父子节点唯一关系性
+	cap   int   // 底层数据的真实容量
+	base  []int // 转移基数
+	check []int // dat 映射父子节点唯一关系性
 }
 
 func (ins *DAT) init() {
-	ins.len = InitSize
+	ins.cap = InitSize
 	ins.base = make([]int, InitSize)
 	ins.check = make([]int, InitSize)
 	ins.base[0] = StateRoot
@@ -34,17 +35,17 @@ func (ins *DAT) Build(trie *Trie) {
 		}
 
 		//确定最佳转移基数
-		state := number_utils.ABS[int](ins.base[father.index])
+		state := ins.State(father.index)
 		var max int
 		for {
-		COMPLETE:
+		BEGIN:
 			for i := range father.children {
 				node := father.children[i]
-				pos := state + int(node.code)
-				max = number_utils.Max[int](max, pos)
-				if pos < ins.len && ins.check[pos] != 0 {
+				index := state + int(node.code)
+				max = number_utils.Max[int](max, index)
+				if !ins.Empty(index) {
 					state++
-					goto COMPLETE
+					goto BEGIN
 				}
 			}
 			break
@@ -59,7 +60,7 @@ func (ins *DAT) Build(trie *Trie) {
 			//记录节点在base 中 index
 			node.index = index
 			//记录父子节点关系
-			ins.check[index] = state
+			ins.check[index] = father.index
 			ins.setState(index, state, node.isLeaf)
 		}
 		return
@@ -68,15 +69,34 @@ func (ins *DAT) Build(trie *Trie) {
 
 func (ins *DAT) Find(keyword []rune) bool {
 	var index int
-	state := StateRoot
 	for _, r := range keyword {
-		i := state + int(r)
-		if ins.check[i] != state {
+		i := ins.State(index) + int(r)
+		if ins.check[i] != index {
 			return false
 		}
 		index = i
 	}
 	return ins.base[index] < 0
+}
+
+func (ins *DAT) Length() int {
+	return ins.len
+}
+
+func (ins *DAT) Cap() int {
+	return ins.cap
+}
+
+func (ins *DAT) State(s int) int {
+	return number_utils.ABS[int](ins.base[s])
+}
+
+func (ins *DAT) Empty(s int) bool {
+	if s >= ins.len {
+		return true
+	}
+
+	return ins.check[s] == 0 && ins.base[s] == 0
 }
 
 func (ins *DAT) resize(in int) {
@@ -90,10 +110,10 @@ func (ins *DAT) resize(in int) {
 	ins.cap = math.PowerOf2(in)
 	ins.len = in
 
-	ins.arrayCopy()
+	ins.malloc()
 }
 
-func (ins *DAT) arrayCopy() {
+func (ins *DAT) malloc() {
 	newBase := make([]int, ins.cap)
 	copy(newBase, ins.base)
 	ins.base = newBase
@@ -101,14 +121,6 @@ func (ins *DAT) arrayCopy() {
 	newCheck := make([]int, ins.cap)
 	copy(newCheck, ins.check)
 	ins.check = newCheck
-}
-
-func (ins *DAT) Length() int {
-	return ins.len
-}
-
-func (ins *DAT) Cap() int {
-	return ins.cap
 }
 
 //setState 更新 base[state]
@@ -125,4 +137,9 @@ func (ins *DAT) free(index int) bool {
 		return false
 	}
 	return ins.check[index] == 0
+}
+
+func (ins *DAT) Print() {
+	fmt.Println("Base: ", ins.base)
+	fmt.Println("Check: ", ins.check)
 }

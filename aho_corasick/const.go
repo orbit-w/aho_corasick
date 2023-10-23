@@ -8,8 +8,9 @@ package aho_corasick
 
 const (
 	StateRoot = 1
+	StateBase = 1
 
 	IndexRoot = 0
 
-	InitSize = 16
+	InitSize = 64
 )

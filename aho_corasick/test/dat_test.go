@@ -1,7 +1,9 @@
-package benchmark
+package test
 
 import (
+	"fmt"
 	"github.com/orbit-w/aho_corasick/aho_corasick"
+	"sort"
 	"testing"
 )
 
@@ -10,6 +12,24 @@ import (
    @Author: david
    @File: dat_test
 */
+
+func TestDAT_Find(t *testing.T) {
+	ks := aho_corasick.StrKeySlice{
+		[]rune("he"),
+		[]rune("she"),
+		[]rune("hers"),
+		[]rune("his"),
+	}
+	sort.Sort(ks)
+	trie := new(aho_corasick.Trie)
+	trie.Build(ks)
+	dat := new(aho_corasick.DAT)
+	dat.Build(trie)
+	dat.Print()
+
+	fmt.Println(dat.Find([]rune("herss")))
+	fmt.Println(dat.Find([]rune("hers")))
+}
 
 func TestAC_AutomationInit(t *testing.T) {
 	keywords := [][]string{
@@ -28,10 +48,12 @@ func TestAC_AutomationInit(t *testing.T) {
 		}
 		ks = append(ks, dk)
 	}
-	ac := new(aho_corasick.AC)
-	ac.Build(ks)
-	//Print(aho_corasick.dat)
-	ac.Print()
+	sort.Sort(ks)
+	trie := new(aho_corasick.Trie)
+	trie.Build(ks)
+	dat := new(aho_corasick.DAT)
+	dat.Build(trie)
+	dat.Print()
 }
 
 func toRune(s string) rune {
