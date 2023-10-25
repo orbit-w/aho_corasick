@@ -19,18 +19,18 @@ import (
 func Test_Trie(t *testing.T) {
 	start := time.Now().UnixNano()
 	filter := sensitive.New()
-	err := filter.LoadWordDict("./../../data/filter_dict.txt")
+	err := filter.LoadWordDict("./../../data/filter.txt")
 	assert.NoError(t, err)
-	runtime.GC()
 	fmt.Println(filter.Replace("sdwdhomoeysadwd", '*'))
 	fmt.Println(misc.MSCast("Trie", start))
+	runtime.GC()
+	filter.FindAll("sdwdhomoeysadwd")
 	misc.PrintMem()
 }
 
 func Test_TrieFindAll(t *testing.T) {
 	filter := sensitive.New()
-	err := filter.LoadWordDict("./../../data/filter_dict.txt")
+	err := filter.LoadWordDict("./../../data/filter.txt")
 	assert.NoError(t, err)
-	in := "sdwdhomoeysadwdsdwdsdwD-¥¶¯sdd-0gd-0gswnch-uj? ch-uj?"
-	fmt.Println(filter.FindAll(in))
+	fmt.Println(filter.FindAll(text))
 }

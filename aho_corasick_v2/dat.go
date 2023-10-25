@@ -1,4 +1,4 @@
-package aho_corasick
+package aho_corasick_v2
 
 import (
 	"fmt"
@@ -29,40 +29,9 @@ func (ins *DAT) init() {
 
 func (ins *DAT) Build(trie *Trie) {
 	ins.init()
+	builder := NewBuilder()
 	trie.BFS(func(father *Node) (stop bool) {
-		if len(father.children) == 0 {
-			return
-		}
-
-		//确定最佳转移基数
-		state := ins.State(father.index)
-		var max int
-		for {
-		BEGIN:
-			for i := range father.children {
-				node := father.children[i]
-				index := state + int(node.code)
-				max = number_utils.Max[int](max, index)
-				if !ins.Empty(index) {
-					state++
-					goto BEGIN
-				}
-			}
-			break
-		}
-
-		ins.resize(max + 1)
-		ins.setState(father.index, state, father.isLeaf)
-
-		for i := range father.children {
-			node := father.children[i]
-			index := state + int(node.code)
-			//记录节点在base 中 index
-			node.index = index
-			//记录父子节点关系
-			ins.check[index] = father.index
-			ins.setState(index, state, node.isLeaf)
-		}
+		builder.insert(ins, father)
 		return
 	})
 }
@@ -70,7 +39,7 @@ func (ins *DAT) Build(trie *Trie) {
 func (ins *DAT) Find(keyword []rune) bool {
 	var index int
 	for _, r := range keyword {
-		i := ins.State(index) + int(r)
+		i := ins.getState(index) + int(r)
 		if ins.check[i] != index {
 			return false
 		}
@@ -87,8 +56,16 @@ func (ins *DAT) Cap() int {
 	return ins.cap
 }
 
-func (ins *DAT) State(s int) int {
-	return number_utils.ABS[int](ins.base[s])
+func (ins *DAT) stateByIndex(index int, code rune) int {
+	return number_utils.ABS[int](ins.base[index]) + int(code)
+}
+
+func (ins *DAT) state(s, code int) int {
+	return s + code
+}
+
+func (ins *DAT) getState(i int) int {
+	return number_utils.ABS[int](ins.base[i])
 }
 
 func (ins *DAT) Empty(s int) bool {

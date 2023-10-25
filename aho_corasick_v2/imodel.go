@@ -1,4 +1,4 @@
-package aho_corasick
+package aho_corasick_v2
 
 /*
    @Author: orbit-w
@@ -19,6 +19,5 @@ type IDat interface {
 	Find(keyword []rune) bool
 	Length() int
 	Cap() int
-	State(s int) int
 	Empty(s int) bool
 }

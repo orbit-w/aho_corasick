@@ -1,4 +1,4 @@
-package aho_corasick
+package aho_corasick_v2
 
 import (
 	"bufio"

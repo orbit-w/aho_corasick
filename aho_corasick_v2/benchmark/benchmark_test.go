@@ -2,7 +2,7 @@ package benchmark
 
 import (
 	"github.com/importcjj/sensitive"
-	"github.com/orbit-w/aho_corasick/aho_corasick"
+	"github.com/orbit-w/aho_corasick/aho_corasick_v2"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -14,11 +14,11 @@ import (
 */
 
 var (
-	text = "sdwdhomoeysadwdsdwdsdwD-¥¶¯sdd-0gd-0gswnch-uj? ch-uj?congs-anba-c-hoba-c-hosdwdaba-c-ho"
+	text = "sdwdhomoeys秀发发布周sdwD-¥¶¯sdd-0gd-0gswnch-uj? ch-uj?陶瓷展-辉煌夺目-c-牵强附会-c-hosdwdaba-c-ho"
 )
 
 func Benchmark_ACFindAll(b *testing.B) {
-	ac, err := aho_corasick.LoadDict("./../../data/filter_dict.txt")
+	ac, err := aho_corasick_v2.LoadDict("./../../data/filter.txt")
 	assert.NoError(b, err)
 	in := []rune(text)
 
@@ -32,7 +32,7 @@ func Benchmark_ACFindAll(b *testing.B) {
 }
 
 func Benchmark_ACReplace(b *testing.B) {
-	ac, err := aho_corasick.LoadDict("./../../data/filter_dict.txt")
+	ac, err := aho_corasick_v2.LoadDict("./../../data/filter.txt")
 	assert.NoError(b, err)
 	in := []rune(text)
 
@@ -47,7 +47,7 @@ func Benchmark_ACReplace(b *testing.B) {
 
 func Benchmark_TrieFindAll(b *testing.B) {
 	filter := sensitive.New()
-	err := filter.LoadWordDict("./../../data/filter_dict.txt")
+	err := filter.LoadWordDict("./../../data/filter.txt")
 	assert.NoError(b, err)
 	b.ReportAllocs()
 	b.ResetTimer()
@@ -60,7 +60,7 @@ func Benchmark_TrieFindAll(b *testing.B) {
 
 func Benchmark_TrieReplace(b *testing.B) {
 	filter := sensitive.New()
-	err := filter.LoadWordDict("./../../data/filter_dict.txt")
+	err := filter.LoadWordDict("./../../data/filter.txt")
 	assert.NoError(b, err)
 	b.ReportAllocs()
 	b.ResetTimer()

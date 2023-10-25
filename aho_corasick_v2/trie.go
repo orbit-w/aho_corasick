@@ -1,4 +1,4 @@
-package aho_corasick
+package aho_corasick_v2
 
 import "fmt"
 
@@ -107,6 +107,22 @@ func (ins *Trie) BFS(iter func(node *Node) bool) {
 		for i := range head.children {
 			child := head.children[i]
 			queue = append(queue, child)
+		}
+	}
+}
+
+func (ins *Trie) DFS(iter func(node *Node) bool) {
+	stack := NodeStack{}
+	stack.Push(ins.root)
+	for stack.Length() > 0 {
+		head := stack.Pop()
+		stop := iter(head)
+		if stop {
+			break
+		}
+		for i := range head.children {
+			child := head.children[i]
+			stack.Push(child)
 		}
 	}
 }

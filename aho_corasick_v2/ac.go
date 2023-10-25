@@ -1,4 +1,4 @@
-package aho_corasick
+package aho_corasick_v2
 
 import (
 	"fmt"
@@ -158,8 +158,9 @@ func (ins *AC) build(trie *Trie) {
 }
 
 func (ins *AC) Print() {
-	fmt.Println("base: ", ins.base)
-	fmt.Println("check: ", ins.check)
-	fmt.Println("fail: ", ins.fail)
-	fmt.Println("output: ", ins.output)
+	for i := range ins.base {
+		if i != 0 && ins.base[i] != 0 {
+			fmt.Println(i)
+		}
+	}
 }
