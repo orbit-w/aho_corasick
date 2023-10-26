@@ -72,14 +72,14 @@ func TestAC_MultiPatternSearch(t *testing.T) {
 
 func Test_ACLoad(t *testing.T) {
 	start := time.Now().UnixNano()
+	//ac, err := aho_corasick_v2.LoadDict("./../../data/SenstiveWord.txt")
 	ac, err := aho_corasick_v2.LoadDict("./../../data/filter.txt")
 	assert.NoError(t, err)
 	fmt.Println(ac.Cap())
-	in := []rune("sdwdhomoeysadwd")
+	in := []rune("sdwdhjsfq.cfsadwd")
 	ac.Replace(in, '*')
 	fmt.Println(misc.MSCast("AC", start))
 	fmt.Println(string(in))
-	ac.Print()
 	runtime.GC()
 	ac.FindAll([]rune("sdwdhomoeysadwd"))
 	misc.PrintMem()

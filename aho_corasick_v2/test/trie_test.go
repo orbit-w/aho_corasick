@@ -21,7 +21,7 @@ func Test_Trie(t *testing.T) {
 	filter := sensitive.New()
 	err := filter.LoadWordDict("./../../data/filter.txt")
 	assert.NoError(t, err)
-	fmt.Println(filter.Replace("sdwdhomoeysadwd", '*'))
+	fmt.Println(filter.Replace("sdwdhjsfq.cfsadwd", '*'))
 	fmt.Println(misc.MSCast("Trie", start))
 	runtime.GC()
 	filter.FindAll("sdwdhomoeysadwd")

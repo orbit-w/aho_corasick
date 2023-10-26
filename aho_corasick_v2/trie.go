@@ -120,7 +120,7 @@ func (ins *Trie) DFS(iter func(node *Node) bool) {
 		if stop {
 			break
 		}
-		for i := range head.children {
+		for i := len(head.children) - 1; i >= 0; i-- {
 			child := head.children[i]
 			stack.Push(child)
 		}
