@@ -2,20 +2,27 @@
 AC automaton, the algorithm uses DAT(double array trie) to construct a finite-state machine and combined the concept of KMP to construct a mismatch pointer.
 It is a kind of dictionary-matching algorithm that locates elements of a finite set of strings (the "dictionary") within an input text. It matches all strings simultaneously.
 
-## Introduction:
-Aho_corasick algorithm is better than traditional dict trie, for example:
-* less memory usage, differ by one order of magnitude, only 10-20% of trie
-* pattern matching is an order of magnitude faster
-
 ## Comparison:
-Compared with traditional dict trie, Read a dictionary library with a vocabulary of 51W, 
-contains Chinese character set, memory usage:
+硬件 MacAir Apple M2, 在文本处理能力和内存占用两方面跟传统字典 trie 做了比较:
 ```
-                        HeapAlloc(MiB)      HeapObjs        BuildTime(ms)
-    
-Trie                    454                 8506021         507
+场景1: 加载了本地的屏蔽词字典,不包含中文字符,词汇量为13W
 
-AhoCorasickGo           125                 215915          2100
+# 内存占用
+                        Trie                AhoCorasickGo
+HeapAlloc/MiB           35                  19
+
+HeapObjs                709750              172106
+
+BuildTime/ms            41                  116
+
+# 测试处理433长度的文本性能对比，硬件 MacAir Apple M2 (模式串："outlieroutliersoutliesoutlineoutlinedoutlinesoutliningoutliveoutliveddwoutliveroutliversoutlivesoutlivingoutlookoutlooksoutloveoutlovedoutlovesoutlovingoutlyingsdhwdhoutmansdhwdhoutmaneuverojhbdwoutmaneuveredshjdwdjoutmaneuveringsdjawhdoutmaneuversdwadadoutmannediwjdskjoutmanningkdfjjoutmanswundnoutmarchhjghcoutmarchedwsdoutmarcheswdwoutmarchinglksmcnskncwjfwajdmsdbwajdwakjdsjkdbaskdbakwdbkasbdakndbsnabdkwdbsandbsndbnv @@#dasdawd")
+                        Trie                AhoCorasickGo
+接口名称
+FindAll                 53 μs/op            9 μs/op
+
+******************************************************************************
+
+在大幅提高文本处理性能前提下，内存使用更优; 当字典中词汇量更大, 单条词汇更长，包含中文字符情况下优势更加明显。
 
 ```
 
@@ -31,7 +38,7 @@ import (
 )
 
 func main() {
-	ac, _ := aho_corasick_v2.LoadDict("./../../data/filter.txt")
+	ac, _ := aho_corasick_v2.LoadDict(dictDir)
 	in := []rune("sdwdhjsfq.cfsadwd")
 
 	//text input replacement
@@ -40,43 +47,5 @@ func main() {
 	ac.FindAll(in)
 	
 }
-
-```
-
-## Benchmark:
-```go
-
-package benchmark
-
-import (
-	"github.com/orbit-w/aho_corasick/aho_corasick"
-	"testing"
-)
-
-var (
-	text = "sdwdhomoeysadwdsdwdsdwD-¥¶¯sdd-0gd-0gswnch-uj? ch-uj?congs-anba-c-hoba-c-hosdwdaba-c-ho"
-)
-
-func Benchmark_ACFindAll(b *testing.B) {
-	ac, _ := aho_corasick.LoadDict("path")
-	in := []rune(text)
-	b.ReportAllocs()
-	b.ResetTimer()
-	b.Run("FindAll", func(b *testing.B) {
-		for i := 0; i < b.N; i++ {
-			ac.FindAll(in)
-		}
-	})
-}
-
-```
-```shell
-goos: darwin
-goarch: arm64
-pkg: github.com/orbit-w/aho_corasick/aho_corasick/benchmark
-Benchmark_ACFindAll
-Benchmark_ACFindAll/FindAll
-Benchmark_ACFindAll/FindAll-8         	 1000000	      1101 ns/op
-PASS
 
 ```

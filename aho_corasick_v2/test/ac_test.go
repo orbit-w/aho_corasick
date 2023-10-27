@@ -18,7 +18,8 @@ import (
 */
 
 var (
-	text = "sdwdhomoeys秀发发布周sdwD-¥¶¯sdd-0gd-0gswnch-uj? ch-uj?陶瓷展-辉煌夺目-c-牵强附会-c-hosdwdaba-c-ho"
+	text    = "outlearningsdwdsdoutgnawedsdwdsdad"
+	dictDir = "./../../data/en/dict.txt"
 )
 
 // h: 104, e: 101, s: 115, r: 114, i: 105
@@ -73,7 +74,7 @@ func TestAC_MultiPatternSearch(t *testing.T) {
 func Test_ACLoad(t *testing.T) {
 	start := time.Now().UnixNano()
 	//ac, err := aho_corasick_v2.LoadDict("./../../data/SenstiveWord.txt")
-	ac, err := aho_corasick_v2.LoadDict("./../../data/filter.txt")
+	ac, err := aho_corasick_v2.LoadDict(dictDir)
 	assert.NoError(t, err)
 	fmt.Println(ac.Cap())
 	in := []rune("sdwdhjsfq.cfsadwd")
@@ -86,7 +87,7 @@ func Test_ACLoad(t *testing.T) {
 }
 
 func Test_ACFindAll(t *testing.T) {
-	ac, err := aho_corasick_v2.LoadDict("./../../data/filter.txt")
+	ac, err := aho_corasick_v2.LoadDict(dictDir)
 	assert.NoError(t, err)
 	in := []rune(text)
 	res := ac.FindAll(in)
@@ -115,12 +116,12 @@ func Test_ACReplace(t *testing.T) {
 
 func Test_Replace(t *testing.T) {
 	filter := sensitive.New()
-	err := filter.LoadWordDict("./../../data/filter.txt")
+	err := filter.LoadWordDict(dictDir)
 	assert.NoError(t, err)
 	str1 := filter.Replace(text, '*')
 	fmt.Println(filter.Replace(text, '*'))
 
-	ac, err := aho_corasick_v2.LoadDict("./../../data/filter.txt")
+	ac, err := aho_corasick_v2.LoadDict(dictDir)
 	assert.NoError(t, err)
 	in := []rune(text)
 	ac.Replace(in, '*')
