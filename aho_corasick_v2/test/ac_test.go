@@ -73,8 +73,7 @@ func TestAC_MultiPatternSearch(t *testing.T) {
 
 func Test_ACLoad(t *testing.T) {
 	start := time.Now().UnixNano()
-	ac, err := aho_corasick_v2.LoadDict("./../../data/SenstiveWord.txt")
-	//ac, err := aho_corasick_v2.LoadDict(dictDir)
+	ac, err := aho_corasick_v2.LoadDict(dictDir)
 	assert.NoError(t, err)
 	fmt.Println(ac.Cap())
 	in := []rune("sdwdhjsfq.cfsadwd")

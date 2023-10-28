@@ -19,7 +19,7 @@ import (
 func Test_Trie(t *testing.T) {
 	start := time.Now().UnixNano()
 	filter := sensitive.New()
-	err := filter.LoadWordDict("./../../data/SenstiveWord.txt")
+	err := filter.LoadWordDict(dictDir)
 	assert.NoError(t, err)
 	fmt.Println(filter.Replace("sdwdhjsfq.cfsadwd", '*'))
 	fmt.Println(misc.MSCast("Trie", start))
