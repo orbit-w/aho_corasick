@@ -19,7 +19,7 @@ import (
 func Test_Trie(t *testing.T) {
 	start := time.Now().UnixNano()
 	filter := sensitive.New()
-	err := filter.LoadWordDict(dictDir)
+	err := filter.LoadWordDict("./../../data/SenstiveWord.txt")
 	assert.NoError(t, err)
 	fmt.Println(filter.Replace("sdwdhjsfq.cfsadwd", '*'))
 	fmt.Println(misc.MSCast("Trie", start))
@@ -33,4 +33,7 @@ func Test_TrieFindAll(t *testing.T) {
 	err := filter.LoadWordDict(dictDir)
 	assert.NoError(t, err)
 	fmt.Println(filter.FindAll(text))
+}
+
+func Test_CedarTrie(t *testing.T) {
 }
