@@ -93,7 +93,7 @@ func Test_ACReplace(t *testing.T) {
 	}
 	ac.Replace(input, '*')
 	fmt.Println(string(input))
-	assert.Equal(t, "a*******sadwd********", string(input))
+	assert.Equal(t, "a*******sadwd***rs***", string(input))
 }
 
 func Test_Replace(t *testing.T) {
@@ -109,9 +109,12 @@ func Test_Replace(t *testing.T) {
 	assert.NoError(t, err)
 	in := []rune(text)
 	//"outlearningsdwdsdoutgnawedsdwdsdad"
-	//"******rn**gsdwds*********dsdwds**d"
-	//“***********sdwds**********sdwds***
 	ac.Replace(in, '*')
 	fmt.Println(string(in))
 	assert.Equal(t, str1, string(in))
+
+	//测试ReplaceAll接口，期望结果：‘************dwds***********dwds***’
+	in = []rune(text)
+	ac.ReplaceAll(in, '*')
+	fmt.Println(string(in))
 }

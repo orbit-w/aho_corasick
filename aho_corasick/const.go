@@ -10,7 +10,9 @@ const (
 	StateRoot = 1
 	StateBase = 1
 
-	IndexRoot = 0
+	IndexRoot = 1
 
 	InitSize = 64
+
+	StateFail = -1
 )

@@ -23,7 +23,7 @@ func (ins *DAT) init() {
 	ins.cap = InitSize
 	ins.base = make([]int, InitSize)
 	ins.check = make([]int, InitSize)
-	ins.base[0] = StateRoot
+	ins.base[IndexRoot] = StateRoot
 	return
 }
 

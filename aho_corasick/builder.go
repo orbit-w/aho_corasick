@@ -37,7 +37,7 @@ func (ins *DATBuilder) insert(dat *DAT, father *Node) {
 	BEGIN:
 		for i := range father.children {
 			node := father.children[i]
-			index := state + int(node.code)
+			index := state + node.Code()
 			max = number_utils.Max[int](max, index)
 			if !dat.Empty(index) {
 				state++
@@ -53,7 +53,7 @@ func (ins *DATBuilder) insert(dat *DAT, father *Node) {
 
 	for i := range father.children {
 		node := father.children[i]
-		index := state + int(node.code)
+		index := state + node.Code()
 		//记录节点在base 中 index
 		node.index = index
 		//记录父子节点关系
@@ -65,9 +65,9 @@ func (ins *DATBuilder) insert(dat *DAT, father *Node) {
 
 func (ins *DATBuilder) heuristicState(father *Node) (state int) {
 	head := father.children[0]
-	pos := int(head.code) + StateBase
+	pos := head.Code() + StateBase
 	pos = number_utils.Max[int](pos, ins.cursor)
-	state = pos - int(head.code)
+	state = pos - head.Code()
 	return
 }
 
@@ -75,7 +75,7 @@ func (ins *DATBuilder) heuristicFunc() func(pos int) {
 	var next int
 	return func(pos int) {
 		if next == 0 {
-			next = pos
+			next = pos + 1
 			ins.cursor = next
 		}
 	}

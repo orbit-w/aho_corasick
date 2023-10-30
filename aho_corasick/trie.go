@@ -41,6 +41,10 @@ func (ins *Node) Exist() bool {
 	return len(ins.output) > 0
 }
 
+func (ins *Node) Code() int {
+	return int(ins.code) + 1
+}
+
 type Trie struct {
 	count int32
 	root  *Node
@@ -50,6 +54,7 @@ func (ins *Trie) Build(ks StrKeySlice) {
 	ins.root = &Node{
 		isRoot: true,
 		depth:  0,
+		index:  IndexRoot,
 	}
 
 	for _, key := range ks {

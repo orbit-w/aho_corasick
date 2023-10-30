@@ -26,10 +26,6 @@ func New(keywords StrKeySlice) IAhoCorasick {
 	return ins
 }
 
-func (ins *AC) Cap() int {
-	return ins.cap
-}
-
 func (ins *AC) Build(keywords StrKeySlice) {
 	ins.output = make(map[int][]rune)
 
@@ -49,6 +45,10 @@ func (ins *AC) Build(keywords StrKeySlice) {
 
 	ins.build(trie)
 	trie.Free()
+}
+
+func (ins *AC) Cap() int {
+	return ins.cap
 }
 
 func (ins *AC) Validate(input []rune) bool {
@@ -96,25 +96,24 @@ func (ins *AC) ReplaceAll(input []rune, repl rune) {
 
 func (ins *AC) Replace(input []rune, repl rune) {
 	var (
-		index int
+		index = IndexRoot
 		state = StateRoot
 		left  = 0
 	)
 
 	for i := 0; i < len(input); i++ {
-		code := int(input[i])
+		code := int(input[i]) + 1
 		t := state + code
 		if !ins.Exist(t, index) {
 			state = StateRoot
-			index = 0
-			left++
+			index = IndexRoot
 			i = left
+			left++
 			continue
 		}
 
 		index = t
 		state = ins.State(index)
-
 		if info, ok := ins.output[index]; ok {
 			for _, r := range info {
 				for j := i - (int(r) - 1); j <= i; j++ {
@@ -127,35 +126,53 @@ func (ins *AC) Replace(input []rune, repl rune) {
 
 func (ins *AC) multiPatternMatching(input []rune, iter func(res []rune, index int) (stop bool)) {
 	var (
-		index int
-		state int
+		index = IndexRoot
+		state = StateRoot
 	)
-	state = StateRoot
+
 	for i, r := range input {
-		code := int(r)
-		for {
-			t := state + code
-			if ins.Exist(t, index) {
-				index = t
-				state = ins.State(index)
-				goto M
-			}
+		code := int(r) + 1
+		out := ins._FSM(S{
+			Index: index,
+			State: state,
+			Code:  code,
+		})
 
-			if state == StateRoot {
-				index = IndexRoot
-				break
-			}
-
-			index = ins.fail[index]
-			state = ins.State(index)
-		}
-		continue
-	M:
-		if info, ok := ins.output[index]; ok {
-			if iter(info, i) {
-				return
+		switch out.State {
+		case StateFail:
+			state = StateRoot
+			index = out.Index
+		default:
+			state = out.State
+			index = out.Index
+			if info, ok := ins.output[index]; ok {
+				if iter(info, i) {
+					return
+				}
 			}
 		}
+	}
+}
+
+func (ins *AC) _FSM(in S) (out S) {
+	state := in.State
+	index := in.Index
+	for {
+		t := state + in.Code
+		if ins.Exist(t, index) {
+			out.Index = t
+			out.State = ins.State(out.Index)
+			return
+		}
+
+		if state == StateRoot {
+			out.State = StateFail
+			out.Index = IndexRoot
+			return
+		}
+
+		index = ins.fail[index]
+		state = ins.State(index)
 	}
 }
 
