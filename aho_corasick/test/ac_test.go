@@ -3,12 +3,9 @@ package test
 import (
 	"fmt"
 	"github.com/importcjj/sensitive"
-	"github.com/orbit-w/aho_corasick/aho_corasick_v2"
-	"github.com/orbit-w/aho_corasick/lib/misc"
+	"github.com/orbit-w/aho_corasick/aho_corasick"
 	"github.com/stretchr/testify/assert"
-	"runtime"
 	"testing"
-	"time"
 )
 
 /*
@@ -18,13 +15,14 @@ import (
 */
 
 var (
-	text    = "outlearningsdwdsdoutgnawedsdwdsdad"
-	dictDir = "./../../data/en/dict.txt"
+	text      = "outlearningsdwdsdoutgnawedsdwdsdad"
+	enDictDir = "./../../data/en/dict.txt"
+	cnDictDir = "./../../data/cn/dict.txt"
 )
 
 // h: 104, e: 101, s: 115, r: 114, i: 105
 func TestAC_Fail(t *testing.T) {
-	ks := aho_corasick_v2.StrKeySlice{
+	ks := aho_corasick.StrKeySlice{
 		[]rune("he"),
 		[]rune("she"),
 		[]rune("hers"),
@@ -35,20 +33,19 @@ func TestAC_Fail(t *testing.T) {
 		fmt.Println(ks[i])
 	}
 
-	ac := aho_corasick_v2.New(ks)
+	ac := aho_corasick.New(ks)
 	ac.Print()
-	fmt.Println(rune('C'))
 }
 
 func TestAC_MultiPatternSearch(t *testing.T) {
-	ks := aho_corasick_v2.StrKeySlice{
+	ks := aho_corasick.StrKeySlice{
 		[]rune("he"),
 		[]rune("she"),
 		[]rune("hers"),
 		[]rune("his"),
 	}
 
-	ac := aho_corasick_v2.New(ks)
+	ac := aho_corasick.New(ks)
 	input := []rune("ahishers")
 	patterns := ac.FindAll(input)
 	for _, r := range patterns {
@@ -59,11 +56,11 @@ func TestAC_MultiPatternSearch(t *testing.T) {
 	fmt.Println("===================================================")
 	//中文模式串匹配
 	input = []rune("听说独立日日这部电影是美国人拍的")
-	ks = aho_corasick_v2.StrKeySlice{
+	ks = aho_corasick.StrKeySlice{
 		[]rune("独立"),
 		[]rune("独立日"),
 	}
-	ac = aho_corasick_v2.New(ks)
+	ac = aho_corasick.New(ks)
 	patterns = ac.FindAll(input)
 	for _, r := range patterns {
 		fmt.Println(string(r.Pattern))
@@ -71,22 +68,8 @@ func TestAC_MultiPatternSearch(t *testing.T) {
 	}
 }
 
-func Test_ACLoad(t *testing.T) {
-	start := time.Now().UnixNano()
-	ac, err := aho_corasick_v2.LoadDict(dictDir)
-	assert.NoError(t, err)
-	fmt.Println(ac.Cap())
-	in := []rune("sdwdhjsfq.cfsadwd")
-	ac.Replace(in, '*')
-	fmt.Println(misc.MSCast("AC", start))
-	fmt.Println(string(in))
-	runtime.GC()
-	ac.FindAll([]rune("sdwdhomoeysadwd"))
-	misc.PrintMem()
-}
-
 func Test_ACFindAll(t *testing.T) {
-	ac, err := aho_corasick_v2.LoadDict(dictDir)
+	ac, err := aho_corasick.LoadDict(enDictDir)
 	assert.NoError(t, err)
 	in := []rune(text)
 	res := ac.FindAll(in)
@@ -97,13 +80,13 @@ func Test_ACFindAll(t *testing.T) {
 }
 
 func Test_ACReplace(t *testing.T) {
-	ks := aho_corasick_v2.StrKeySlice{
+	ks := aho_corasick.StrKeySlice{
 		[]rune("he"),
 		[]rune("she"),
 		[]rune("hers"),
 		[]rune("his"),
 	}
-	ac := aho_corasick_v2.New(ks)
+	ac := aho_corasick.New(ks)
 	input := []rune("ahisherssadwdshershis")
 	for _, v := range ac.FindAll(input) {
 		fmt.Println(string(v.Pattern))
@@ -115,14 +98,19 @@ func Test_ACReplace(t *testing.T) {
 
 func Test_Replace(t *testing.T) {
 	filter := sensitive.New()
-	err := filter.LoadWordDict(dictDir)
+	err := filter.LoadWordDict(enDictDir)
 	assert.NoError(t, err)
+	fmt.Println(filter.FindAll(text))
 	str1 := filter.Replace(text, '*')
-	fmt.Println(filter.Replace(text, '*'))
+	fmt.Println(str1)
+	filter.FindAll(text)
 
-	ac, err := aho_corasick_v2.LoadDict(dictDir)
+	ac, err := aho_corasick.LoadDict(enDictDir)
 	assert.NoError(t, err)
 	in := []rune(text)
+	//"outlearningsdwdsdoutgnawedsdwdsdad"
+	//"******rn**gsdwds*********dsdwds**d"
+	//“***********sdwds**********sdwds***
 	ac.Replace(in, '*')
 	fmt.Println(string(in))
 	assert.Equal(t, str1, string(in))

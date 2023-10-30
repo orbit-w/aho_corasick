@@ -1,15 +1,19 @@
-package aho_corasick_v2
+package aho_corasick
 
-import "github.com/orbit-w/aho_corasick/lib/number_utils"
+import (
+	"github.com/orbit-w/aho_corasick/lib/number_utils"
+)
 
 /*
    @Author: orbit-w
-   @File: aho_corasick_v2
+   @File: aho_corasick
    @2023 10月 周三 12:03
 */
 
 type DATBuilder struct {
 	cursor int
+	depth  int
+	max    int
 }
 
 func NewBuilder() *DATBuilder {
@@ -27,7 +31,7 @@ func (ins *DATBuilder) insert(dat *DAT, father *Node) {
 		max int
 	)
 
-	state := ins.heuristicState(dat, father)
+	state := ins.heuristicState(father)
 	heuristic := ins.heuristicFunc()
 	for {
 	BEGIN:
@@ -59,9 +63,9 @@ func (ins *DATBuilder) insert(dat *DAT, father *Node) {
 	return
 }
 
-func (ins *DATBuilder) heuristicState(dat *DAT, father *Node) (state int) {
+func (ins *DATBuilder) heuristicState(father *Node) (state int) {
 	head := father.children[0]
-	pos := dat.stateByIndex(father.index, head.code)
+	pos := int(head.code) + StateBase
 	pos = number_utils.Max[int](pos, ins.cursor)
 	state = pos - int(head.code)
 	return
@@ -75,4 +79,11 @@ func (ins *DATBuilder) heuristicFunc() func(pos int) {
 			ins.cursor = next
 		}
 	}
+}
+
+func (ins *DATBuilder) dive(dep int) {
+	ins.depth = dep
+	ins.max = number_utils.Max[int](ins.max, ins.cursor)
+	ins.cursor = 0
+	ins.depth = dep
 }

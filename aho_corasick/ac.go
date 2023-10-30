@@ -1,4 +1,4 @@
-package aho_corasick_v2
+package aho_corasick
 
 import (
 	"fmt"
@@ -48,6 +48,7 @@ func (ins *AC) Build(keywords StrKeySlice) {
 	copy(ins.check, dat.check)
 
 	ins.build(trie)
+	trie.Free()
 }
 
 func (ins *AC) Validate(input []rune) bool {
@@ -81,7 +82,8 @@ func (ins *AC) FindAll(input []rune) []Result {
 	return patterns
 }
 
-func (ins *AC) Replace(input []rune, repl rune) {
+// ReplaceAll 将匹配到的所有字符全部替换成 repl
+func (ins *AC) ReplaceAll(input []rune, repl rune) {
 	ins.multiPatternMatching(input, func(res []rune, index int) (stop bool) {
 		for _, r := range res {
 			for i := index - (int(r) - 1); i <= index; i++ {
@@ -90,6 +92,37 @@ func (ins *AC) Replace(input []rune, repl rune) {
 		}
 		return
 	})
+}
+
+func (ins *AC) Replace(input []rune, repl rune) {
+	var (
+		index int
+		state = StateRoot
+		left  = 0
+	)
+
+	for i := 0; i < len(input); i++ {
+		code := int(input[i])
+		t := state + code
+		if !ins.Exist(t, index) {
+			state = StateRoot
+			index = 0
+			left++
+			i = left
+			continue
+		}
+
+		index = t
+		state = ins.State(index)
+
+		if info, ok := ins.output[index]; ok {
+			for _, r := range info {
+				for j := i - (int(r) - 1); j <= i; j++ {
+					input[j] = repl
+				}
+			}
+		}
+	}
 }
 
 func (ins *AC) multiPatternMatching(input []rune, iter func(res []rune, index int) (stop bool)) {

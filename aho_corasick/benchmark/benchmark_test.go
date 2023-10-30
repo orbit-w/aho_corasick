@@ -3,7 +3,7 @@ package benchmark
 import (
 	"fmt"
 	"github.com/importcjj/sensitive"
-	"github.com/orbit-w/aho_corasick/aho_corasick_v2"
+	"github.com/orbit-w/aho_corasick/aho_corasick"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -20,7 +20,7 @@ var (
 )
 
 func Benchmark_ACFindAll(b *testing.B) {
-	ac, err := aho_corasick_v2.LoadDict(dictDir)
+	ac, err := aho_corasick.LoadDict(dictDir)
 	assert.NoError(b, err)
 	in := []rune(text)
 	fmt.Println(len(in))
@@ -34,7 +34,7 @@ func Benchmark_ACFindAll(b *testing.B) {
 }
 
 func Benchmark_ACReplace(b *testing.B) {
-	ac, err := aho_corasick_v2.LoadDict(dictDir)
+	ac, err := aho_corasick.LoadDict(dictDir)
 	assert.NoError(b, err)
 	in := []rune(text)
 

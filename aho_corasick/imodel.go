@@ -1,4 +1,4 @@
-package aho_corasick_v2
+package aho_corasick
 
 /*
    @Author: orbit-w
@@ -9,6 +9,7 @@ package aho_corasick_v2
 type IAhoCorasick interface {
 	Cap() int
 	Replace(input []rune, repl rune)
+	ReplaceAll(input []rune, repl rune)
 	FindAll(input []rune) []Result
 	Validate(input []rune) bool
 	Print()

@@ -22,12 +22,12 @@ It is a kind of dictionary-matching algorithm that locates elements of a finite 
     接口名称
     FindAll                 53 μs/op            9 μs/op
     ```
-* 场景2: 加载了本地的网络游戏屏蔽词字典,包含中文字符,片假名,表情等,词汇量为82W
+* 场景2: 加载了本地的网络游戏屏蔽词字典,包含中文字符,片假名等,词汇量为82W
 
     ```
     # 内存占用
                             Trie                AhoCorasickGo
-    HeapAlloc/MiB           454                 125
+    HeapAlloc/MiB           454                 109
     
     HeapObjs                8505987             215912
     
@@ -36,7 +36,7 @@ It is a kind of dictionary-matching algorithm that locates elements of a finite 
 
 ## Summary：
 * 随着模式串的长度 length 增长，double array高效搜索性能优势越明显；
-* 在大幅提高文本处理性能前提下比较 double array和 trie 内存使用情况，当字典中词汇量小, 包含字符集少情况下, double array会产生冗余空间条目, 这种情况下跟传统的Trie比内存占用没有优势；
+* 在大幅提高文本处理性能前提下比较 double array和 trie 内存使用情况，当字典中词汇量小, 包含字符集少情况下, double array会产生冗余空间条目, 这种情况下跟传统的Trie比内存占用没有优势或优势不明显；
 当字典中词汇量大，包含字符集多情况下，比如包含片假名、中文等，double array会保持更紧凑排列且保证极小内存使用开销，优势更加明显.
 引用原论文的话；
 ```

@@ -1,4 +1,4 @@
-package aho_corasick_v2
+package aho_corasick
 
 import "fmt"
 
@@ -125,6 +125,10 @@ func (ins *Trie) DFS(iter func(node *Node) bool) {
 			stack.Push(child)
 		}
 	}
+}
+
+func (ins *Trie) Free() {
+	ins.root = nil
 }
 
 func (ins *Trie) Print() {
