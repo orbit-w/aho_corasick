@@ -75,7 +75,7 @@ func (ins *DATBuilder) heuristicFunc() func(pos int) {
 	var next int
 	return func(pos int) {
 		if next == 0 {
-			next = pos + 1
+			next = pos
 			ins.cursor = next
 		}
 	}

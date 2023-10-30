@@ -42,7 +42,7 @@ func Benchmark_ACReplace(b *testing.B) {
 	b.ResetTimer()
 	b.Run("Replace", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			ac.Replace(in, '*')
+			ac.ReplaceAll(in, '*')
 		}
 	})
 }

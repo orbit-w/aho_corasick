@@ -20,6 +20,7 @@ import (
 func Test_ACLoadEnDict(t *testing.T) {
 	start := time.Now().UnixNano()
 	ac, err := aho_corasick.LoadDict(enDictDir)
+	//ac, err := aho_corasick.LoadDict("./../../data/SenstiveWord.txt")
 	assert.NoError(t, err)
 	fmt.Println(ac.Cap())
 	in := []rune("sdwdhjsfq.cfsadwd")
