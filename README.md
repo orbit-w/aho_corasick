@@ -10,28 +10,39 @@ It is a kind of dictionary-matching algorithm that locates elements of a finite 
     ```
     # 内存占用
                             Trie                AhoCorasickGo
-    HeapAlloc/MiB           35                  19
+    HeapAlloc/MiB           35                  14
     
     HeapObjs                709750              172106
     
-    BuildTime/ms            41                  116
+    BuildTime/ms            41                  91
     
-    # 测试处理433长度的文本性能对比，硬件 MacAir Apple M2 
+    # 接口测试1: 测试处理433长度的文本性能对比，结果如下：
     (模式串："outlieroutliersoutliesoutlineoutlinedoutlinesoutliningoutliveoutliveddwoutliveroutliversoutlivesoutlivingoutlookoutlooksoutloveoutlovedoutlovesoutlovingoutlyingsdhwdhoutmansdhwdhoutmaneuverojhbdwoutmaneuveredshjdwdjoutmaneuveringsdjawhdoutmaneuversdwadadoutmannediwjdskjoutmanningkdfjjoutmanswundnoutmarchhjghcoutmarchedwsdoutmarcheswdwoutmarchinglksmcnskncwjfwajdmsdbwajdwakjdsjkdbaskdbakwdbkasbdakndbsnabdkwdbsandbsndbnv @@#dasdawd")
-                            Trie                AhoCorasickGo
+                          Trie                AhoCorasickGo
     接口名称
-    FindAll                 53 μs/op            9 μs/op
+    FindAll               53 μs/op            7 μs/op
+  
+    # 接口测试2: 测试处理36长度的文本性能对比，结果如下：
+    (模式串："dswkjdajcsnccawdlsd;adksfucksdwdsdwd")
+                          Trie                AhoCorasickGo
+    接口名称
+    Validate              0.85 μs/op          0.004 μs/op
+  
+    # 接口测试3: 关于文本替换，同样处理433长度的文本，同接口测试1的模式串相同，结果如下：
+                          Trie                AhoCorasickGo
+    接口名称
+    Replace               10.4 μs/op          4.7 μs/op
     ```
 * 场景2: 加载了本地的网络游戏屏蔽词字典,包含中文字符,片假名等,词汇量为82W
 
     ```
     # 内存占用
                             Trie                AhoCorasickGo
-    HeapAlloc/MiB           454                 109
+    HeapAlloc/MiB           454                 144
     
     HeapObjs                8505987             215912
     
-    BuildTime/ms            497                 2397
+    BuildTime/ms            497                 2200
     ```
 
 ## Summary：
@@ -65,12 +76,12 @@ import (
 
 func main() {
 	ac, _ := aho_corasick_v2.LoadDict(dictDir)
-	in := []rune("sdwdhjsfq.cfsadwd")
+	pattern := "sdwdhjsfq.cfsadwd"
 
 	//text input replacement
-	ac.Replace(in, '*')
+	ac.Replace(pattern, '*')
 	
-	ac.FindAll(in)
+	ac.FindAll([]rune(pattern))
 	
 }
 

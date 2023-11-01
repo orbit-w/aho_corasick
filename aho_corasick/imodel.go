@@ -8,8 +8,8 @@ package aho_corasick
 
 type IAhoCorasick interface {
 	Cap() int
-	Replace(input []rune, repl rune)
-	ReplaceAll(input []rune, repl rune)
+	Replace(pattern string, repl rune) string
+	ReplaceAll(pattern string, repl rune) string
 	FindAll(input []rune) []Result
 	Validate(input []rune) bool
 	Print()

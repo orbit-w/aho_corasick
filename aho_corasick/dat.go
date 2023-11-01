@@ -56,6 +56,13 @@ func (ins *DAT) Cap() int {
 	return ins.cap
 }
 
+func (ins *DAT) exist(i, state int) bool {
+	if i >= ins.cap {
+		return false
+	}
+	return ins.check[i] == state
+}
+
 func (ins *DAT) stateByIndex(index int, code rune) int {
 	return number_utils.ABS[int](ins.base[index]) + int(code)
 }

@@ -72,7 +72,7 @@ func (ins *Trie) Build(ks StrKeySlice) {
 					child.output = append(child.output, rune(len(key)))
 				}
 				ins.count++
-				father.addChild(child)
+				father.children = append(father.children, child)
 			}
 			father = child
 		}

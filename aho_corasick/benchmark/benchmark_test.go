@@ -19,6 +19,21 @@ var (
 	dictDir = "./../../data/en/dict.txt"
 )
 
+func Benchmark_ACValidate(b *testing.B) {
+	ac, err := aho_corasick.LoadDict(dictDir)
+	assert.NoError(b, err)
+	in := []rune("dswkjdajcsnccawdlsd;adksfucksdwdsdwd")
+	fmt.Println(len(in))
+	fmt.Println(ac.Validate(in))
+	b.ReportAllocs()
+	b.ResetTimer()
+	b.Run("Validate", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			ac.Validate(in)
+		}
+	})
+}
+
 func Benchmark_ACFindAll(b *testing.B) {
 	ac, err := aho_corasick.LoadDict(dictDir)
 	assert.NoError(b, err)
@@ -36,13 +51,38 @@ func Benchmark_ACFindAll(b *testing.B) {
 func Benchmark_ACReplace(b *testing.B) {
 	ac, err := aho_corasick.LoadDict(dictDir)
 	assert.NoError(b, err)
-	in := []rune(text)
-
 	b.ReportAllocs()
 	b.ResetTimer()
 	b.Run("Replace", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			ac.ReplaceAll(in, '*')
+			ac.Replace(text, '*')
+		}
+	})
+}
+
+func Benchmark_ACReplaceAll(b *testing.B) {
+	ac, err := aho_corasick.LoadDict(dictDir)
+	assert.NoError(b, err)
+	b.ReportAllocs()
+	b.ResetTimer()
+	b.Run("Replace", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			ac.ReplaceAll(text, '*')
+		}
+	})
+}
+
+func Benchmark_TrieValidate(b *testing.B) {
+	filter := sensitive.New()
+	err := filter.LoadWordDict(dictDir)
+	assert.NoError(b, err)
+	in := "dswkjdajcsnccawdlsd;adksfucksdwdsdwd"
+	fmt.Println(len(in))
+	b.ReportAllocs()
+	b.ResetTimer()
+	b.Run("Validate", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			filter.Validate(in)
 		}
 	})
 }

@@ -10,7 +10,7 @@ import (
 
 /*
    @Time: 2023/8/22 08:20
-   @Author: david
+   @Author: orbit-w
    @File: dat_test
 */
 
@@ -87,11 +87,12 @@ func Test_ACReplace(t *testing.T) {
 		[]rune("his"),
 	}
 	ac := aho_corasick.New(ks)
-	input := []rune("ahisherssadwdshershis")
+	pattern := "ahisherssadwdshershis"
+	input := []rune(pattern)
 	for _, v := range ac.FindAll(input) {
 		fmt.Println(string(v.Pattern))
 	}
-	ac.Replace(input, '*')
+	ac.Replace(pattern, '*')
 	fmt.Println(string(input))
 	assert.Equal(t, "a*******sadwd***rs***", string(input))
 }
@@ -107,14 +108,12 @@ func Test_Replace(t *testing.T) {
 
 	ac, err := aho_corasick.LoadDict(enDictDir)
 	assert.NoError(t, err)
-	in := []rune(text)
 	//"outlearningsdwdsdoutgnawedsdwdsdad"
-	ac.Replace(in, '*')
-	fmt.Println(string(in))
-	assert.Equal(t, str1, string(in))
+	str2 := ac.Replace(text, '*')
+	fmt.Println(str2)
+	assert.Equal(t, str1, str2)
 
 	//测试ReplaceAll接口，期望结果：‘************dwds***********dwds***’
-	in = []rune(text)
-	ac.ReplaceAll(in, '*')
-	fmt.Println(string(in))
+	str2 = ac.ReplaceAll(text, '*')
+	fmt.Println(str2)
 }

@@ -22,14 +22,21 @@ func Test_ACLoadEnDict(t *testing.T) {
 	ac, err := aho_corasick.LoadDict(enDictDir)
 	//ac, err := aho_corasick.LoadDict("./../../data/SenstiveWord.txt")
 	assert.NoError(t, err)
-	fmt.Println(ac.Cap())
-	in := []rune("sdwdhjsfq.cfsadwd")
-	ac.Replace(in, '*')
+	fmt.Println(ac.Cap() * 8 * 3 / 1024 / 1024)
+	pattern := "sdwdhjsfq.cfsadwd"
+	re := ac.Replace(pattern, '*')
 	fmt.Println(misc.MSCast("AC", start))
-	fmt.Println(string(in))
+	fmt.Println(re)
 	runtime.GC()
-	ac.FindAll([]rune("sdwdhomoeysadwd"))
 	misc.PrintMem()
+	ac.FindAll([]rune("sdwdhomoeysadwd"))
+	runtime.GC()
+	misc.PrintMem()
+	for {
+		time.Sleep(time.Minute)
+		ac.Replace(pattern, '*')
+		misc.PrintMem()
+	}
 }
 
 func Test_ACLoadCnDict(t *testing.T) {
@@ -37,10 +44,10 @@ func Test_ACLoadCnDict(t *testing.T) {
 	ac, err := aho_corasick.LoadDict(cnDictDir)
 	assert.NoError(t, err)
 	fmt.Println(ac.Cap())
-	in := []rune("太阳翼漫无边际测试用例")
-	ac.Replace(in, '*')
+	pattern := "太阳翼漫无边际测试用例"
+	re := ac.Replace(pattern, '*')
 	fmt.Println(misc.MSCast("AC", start))
-	fmt.Println(string(in))
+	fmt.Println(re)
 	runtime.GC()
 	ac.FindAll([]rune("太阳翼漫无边际测试用例"))
 	misc.PrintMem()

@@ -17,7 +17,19 @@ type AC struct {
 	base   []int //转移基数
 	check  []int //dat 映射父子节点唯一关系性
 	fail   []int
-	output map[int][]rune
+	output []Output
+}
+
+type Output struct {
+	words []Word
+}
+
+func (ins *Output) Exist() bool {
+	return len(ins.words) > 0
+}
+
+type Word struct {
+	Len rune
 }
 
 func New(keywords StrKeySlice) IAhoCorasick {
@@ -27,8 +39,6 @@ func New(keywords StrKeySlice) IAhoCorasick {
 }
 
 func (ins *AC) Build(keywords StrKeySlice) {
-	ins.output = make(map[int][]rune)
-
 	sort.Sort(keywords)
 	trie := new(Trie)
 	trie.Build(keywords)
@@ -43,6 +53,8 @@ func (ins *AC) Build(keywords StrKeySlice) {
 	ins.check = make([]int, length)
 	copy(ins.check, dat.check)
 
+	ins.output = make([]Output, length)
+
 	ins.build(trie)
 	trie.Free()
 }
@@ -51,9 +63,10 @@ func (ins *AC) Cap() int {
 	return ins.cap
 }
 
+//Validate 检测字符是否合法
 func (ins *AC) Validate(input []rune) bool {
 	legal := true
-	ins.multiPatternMatching(input, func(res []rune, index int) (stop bool) {
+	ins.multiPatternMatching(input, func(res Output, index int) (stop bool) {
 		legal = false
 		stop = true
 		return
@@ -68,10 +81,10 @@ type Result struct {
 
 func (ins *AC) FindAll(input []rune) []Result {
 	patterns := make([]Result, 0)
-	ins.multiPatternMatching(input, func(res []rune, index int) (stop bool) {
-		for i := range res {
-			r := res[i]
-			start := index - (int(r) - 1)
+	ins.multiPatternMatching(input, func(res Output, index int) (stop bool) {
+		for i := range res.words {
+			word := res.words[i]
+			start := index - (int(word.Len) - 1)
 			patterns = append(patterns, Result{
 				Pattern: input[start : index+1],
 				Start:   start,
@@ -83,26 +96,30 @@ func (ins *AC) FindAll(input []rune) []Result {
 }
 
 // ReplaceAll 将匹配到的所有字符全部替换成 repl
-func (ins *AC) ReplaceAll(input []rune, repl rune) {
-	ins.multiPatternMatching(input, func(res []rune, index int) (stop bool) {
-		for _, r := range res {
-			for i := index - (int(r) - 1); i <= index; i++ {
-				input[i] = repl
+func (ins *AC) ReplaceAll(pattern string, repl rune) string {
+	in := []rune(pattern)
+	ins.multiPatternMatching(in, func(res Output, index int) (stop bool) {
+		for _, word := range res.words {
+			for i := index - (int(word.Len) - 1); i <= index; i++ {
+				in[i] = repl
 			}
 		}
 		return
 	})
+	return string(in)
 }
 
-func (ins *AC) Replace(input []rune, repl rune) {
+// Replace 按照贪心匹配原则从左向右匹配
+func (ins *AC) Replace(pattern string, repl rune) string {
 	var (
 		index = IndexRoot
 		state = StateRoot
+		in    = []rune(pattern)
 		left  = 0
 	)
 
-	for i := 0; i < len(input); i++ {
-		code := int(input[i]) + 1
+	for i := 0; i < len(in); i++ {
+		code := int(in[i]) + 1
 		t := state + code
 		if !ins.Exist(t, index) {
 			state = StateRoot
@@ -114,17 +131,17 @@ func (ins *AC) Replace(input []rune, repl rune) {
 
 		index = t
 		state = ins.State(index)
-		if info, ok := ins.output[index]; ok {
-			for _, r := range info {
-				for j := i - (int(r) - 1); j <= i; j++ {
-					input[j] = repl
-				}
+		op := ins.output[index]
+		for _, w := range op.words {
+			for j := i - (int(w.Len) - 1); j <= i; j++ {
+				in[j] = repl
 			}
 		}
 	}
+	return string(in)
 }
 
-func (ins *AC) multiPatternMatching(input []rune, iter func(res []rune, index int) (stop bool)) {
+func (ins *AC) multiPatternMatching(input []rune, iter func(res Output, index int) (stop bool)) {
 	var (
 		index = IndexRoot
 		state = StateRoot
@@ -140,15 +157,12 @@ func (ins *AC) multiPatternMatching(input []rune, iter func(res []rune, index in
 
 		switch out.State {
 		case StateFail:
-			state = StateRoot
-			index = out.Index
+			state, index = StateRoot, out.Index
 		default:
-			state = out.State
-			index = out.Index
-			if info, ok := ins.output[index]; ok {
-				if iter(info, i) {
-					return
-				}
+			state, index = out.State, out.Index
+			op := ins.output[index]
+			if iter(op, i) {
+				return
 			}
 		}
 	}
@@ -199,8 +213,15 @@ func (ins *AC) build(trie *Trie) {
 		ins.fail[node.index] = node.fail.index
 
 		if node.Exist() {
-			output := make([]rune, len(node.output))
-			copy(output, node.output)
+			output := Output{
+				words: make([]Word, len(node.output)),
+			}
+			for i := range node.output {
+				r := node.output[i]
+				output.words[i] = Word{
+					Len: r,
+				}
+			}
 			ins.output[node.index] = output
 		}
 		return
