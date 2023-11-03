@@ -68,14 +68,12 @@ the double-array has many available, or redundant, entries.’
 package main
 
 import (
-	"github.com/orbit-w/aho_corasick/aho_corasick_v2"
-	"github.com/orbit-w/aho_corasick/lib/misc"
-	"runtime"
-	"time"
+	"github.com/orbit-w/aho_corasick/aho_corasick"
 )
 
 func main() {
-	ac, _ := aho_corasick_v2.LoadDict(dictDir)
+    dictDir := "./data/en/dict.txt"
+	ac, _ := aho_corasick.LoadDict(dictDir)
 	pattern := "sdwdhjsfq.cfsadwd"
 
 	//text input replacement

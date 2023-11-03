@@ -92,9 +92,9 @@ func Test_ACReplace(t *testing.T) {
 	for _, v := range ac.FindAll(input) {
 		fmt.Println(string(v.Pattern))
 	}
-	ac.Replace(pattern, '*')
-	fmt.Println(string(input))
-	assert.Equal(t, "a*******sadwd***rs***", string(input))
+	str := ac.Replace(pattern, '*')
+	fmt.Println(str)
+	assert.Equal(t, "a*******sadwd***rs***", str)
 }
 
 func Test_Replace(t *testing.T) {
