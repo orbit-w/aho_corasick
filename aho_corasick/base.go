@@ -11,3 +11,8 @@ type S struct {
 	Index int
 	Code  int
 }
+
+type Result struct {
+	Pattern []rune
+	Start   int
+}

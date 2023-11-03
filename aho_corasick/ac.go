@@ -28,6 +28,14 @@ func (ins *Output) Exist() bool {
 	return len(ins.words) > 0
 }
 
+func (ins *Output) Rep(i int, iter func(index int)) {
+	for _, w := range ins.words {
+		for j := i - (int(w.Len) - 1); j <= i; j++ {
+			iter(j)
+		}
+	}
+}
+
 type Word struct {
 	Len rune
 }
@@ -67,16 +75,13 @@ func (ins *AC) Cap() int {
 func (ins *AC) Validate(input []rune) bool {
 	legal := true
 	ins.multiPatternMatching(input, func(res Output, index int) (stop bool) {
-		legal = false
-		stop = true
+		if res.Exist() {
+			legal = false
+			stop = true
+		}
 		return
 	})
 	return legal
-}
-
-type Result struct {
-	Pattern []rune
-	Start   int
 }
 
 func (ins *AC) FindAll(input []rune) []Result {
@@ -110,31 +115,30 @@ func (ins *AC) ReplaceAll(pattern string, repl rune) string {
 }
 
 // Replace 按照贪心匹配原则从左向右匹配
+// Example: 字典中 {outlearning, learnings}, 模式串 outlearnings 会匹配到 outlearning 而不会匹配到 learnings
 func (ins *AC) Replace(pattern string, repl rune) string {
-	var (
-		index = IndexRoot
-		state = StateRoot
-		in    = []rune(pattern)
-		left  = 0
-	)
+	index := IndexRoot
+	state := StateRoot
+	in := []rune(pattern)
+	m := len(pattern)
+	for i := 0; i < m; i++ {
+		for j := i; j < m; j++ {
+			code := int(in[j]) + 1
+			t := state + code
+			if !ins.Exist(t, index) {
+				state = StateRoot
+				index = IndexRoot
+				break
+			}
 
-	for i := 0; i < len(in); i++ {
-		code := int(in[i]) + 1
-		t := state + code
-		if !ins.Exist(t, index) {
-			state = StateRoot
-			index = IndexRoot
-			i = left
-			left++
-			continue
-		}
+			index = t
+			state = ins.State(index)
+			op := ins.output[index]
 
-		index = t
-		state = ins.State(index)
-		op := ins.output[index]
-		for _, w := range op.words {
-			for j := i - (int(w.Len) - 1); j <= i; j++ {
-				in[j] = repl
+			for _, w := range op.words {
+				for cur := j - (int(w.Len) - 1); cur <= j; cur++ {
+					in[cur] = repl
+				}
 			}
 		}
 	}
