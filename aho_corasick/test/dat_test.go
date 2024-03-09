@@ -15,6 +15,7 @@ import (
 
 func TestDAT_Find(t *testing.T) {
 	ks := aho_corasick.StrKeySlice{
+		[]rune("hf"),
 		[]rune("he"),
 		[]rune("she"),
 		[]rune("hers"),
@@ -25,10 +26,10 @@ func TestDAT_Find(t *testing.T) {
 	trie.Build(ks)
 	dat := new(aho_corasick.DAT)
 	dat.Build(trie)
-	dat.Print()
 
 	fmt.Println(dat.Find([]rune("herss")))
 	fmt.Println(dat.Find([]rune("hers")))
+	fmt.Println(dat.Find([]rune("his")))
 }
 
 func TestAC_AutomationInit(t *testing.T) {

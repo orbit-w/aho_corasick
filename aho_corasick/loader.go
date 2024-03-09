@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"io"
 	"os"
+	"sort"
 )
 
 /*
@@ -38,4 +39,34 @@ func Load(rd io.Reader) (IAhoCorasick, error) {
 
 	ac.Build(sks)
 	return ac, nil
+}
+
+func LoadDictAndBuildDat(path string) (IDat, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		_ = file.Close()
+	}()
+
+	buf := bufio.NewReader(file)
+	sks := StrKeySlice{}
+	for {
+		line, _, err := buf.ReadLine()
+		if err != nil {
+			if err != io.EOF {
+				return nil, err
+			}
+			break
+		}
+		sks = append(sks, []rune(string(line)))
+	}
+
+	dat := new(DAT)
+	sort.Sort(sks)
+	trie := new(Trie)
+	trie.Build(sks)
+	dat.Build(trie)
+	return dat, nil
 }

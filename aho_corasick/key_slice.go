@@ -28,8 +28,8 @@ func (ins StrKeySlice) Len() int {
 }
 
 func (ins StrKeySlice) Less(i, j int) bool {
-	min := number_utils.Min[int](len(ins[i]), len(ins[j]))
-	for k := 0; k < min; k++ {
+	minV := number_utils.Min[int](len(ins[i]), len(ins[j]))
+	for k := 0; k < minV; k++ {
 		if ins[i][k] != ins[j][k] {
 			return ins[i][k] < ins[j][k]
 		}

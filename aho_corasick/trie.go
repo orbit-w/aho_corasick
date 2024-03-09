@@ -42,7 +42,7 @@ func (ins *Node) Exist() bool {
 }
 
 func (ins *Node) Code() int {
-	return int(ins.code) + 1
+	return int(ins.code)
 }
 
 type Trie struct {

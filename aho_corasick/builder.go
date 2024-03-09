@@ -28,17 +28,18 @@ func (ins *DATBuilder) insert(dat *DAT, father *Node) {
 	}
 
 	var (
-		max int
+		maxV int
 	)
 
 	state := ins.heuristicState(father)
+	//启发函数
 	heuristic := ins.heuristicFunc()
 	for {
 	BEGIN:
 		for i := range father.children {
 			node := father.children[i]
 			index := state + node.Code()
-			max = number_utils.Max[int](max, index)
+			maxV = number_utils.Max[int](maxV, index)
 			if !dat.Empty(index) {
 				state++
 				goto BEGIN
@@ -48,7 +49,7 @@ func (ins *DATBuilder) insert(dat *DAT, father *Node) {
 		break
 	}
 
-	dat.resize(max + 1)
+	dat.resize(maxV + 1)
 	dat.setState(father.index, state, father.isLeaf)
 
 	for i := range father.children {

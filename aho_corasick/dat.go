@@ -37,7 +37,7 @@ func (ins *DAT) Build(trie *Trie) {
 }
 
 func (ins *DAT) Find(keyword []rune) bool {
-	var index int
+	var index int = IndexRoot
 	for _, r := range keyword {
 		i := ins.getState(index) + int(r)
 		if ins.check[i] != index {
@@ -61,14 +61,6 @@ func (ins *DAT) exist(i, state int) bool {
 		return false
 	}
 	return ins.check[i] == state
-}
-
-func (ins *DAT) stateByIndex(index int, code rune) int {
-	return number_utils.ABS[int](ins.base[index]) + int(code)
-}
-
-func (ins *DAT) state(s, code int) int {
-	return s + code
 }
 
 func (ins *DAT) getState(i int) int {
@@ -107,7 +99,7 @@ func (ins *DAT) malloc() {
 	ins.check = newCheck
 }
 
-//setState 更新 base[state]
+// setState 更新 base[state]
 func (ins *DAT) setState(index, state int, isLeaf bool) {
 	if isLeaf {
 		ins.base[index] = -state

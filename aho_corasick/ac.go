@@ -71,7 +71,7 @@ func (ins *AC) Cap() int {
 	return ins.cap
 }
 
-//Validate 检测字符是否合法
+// Validate 检测字符是否合法
 func (ins *AC) Validate(input []rune) bool {
 	legal := true
 	ins.multiPatternMatching(input, func(res Output, index int) (stop bool) {
@@ -123,7 +123,7 @@ func (ins *AC) Replace(pattern string, repl rune) string {
 	m := len(pattern)
 	for i := 0; i < m; i++ {
 		for j := i; j < m; j++ {
-			code := int(in[j]) + 1
+			code := int(in[j])
 			t := state + code
 			if !ins.Exist(t, index) {
 				state = StateRoot
@@ -152,7 +152,7 @@ func (ins *AC) multiPatternMatching(input []rune, iter func(res Output, index in
 	)
 
 	for i, r := range input {
-		code := int(r) + 1
+		code := int(r)
 		out := ins._FSM(S{
 			Index: index,
 			State: state,
