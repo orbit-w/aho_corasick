@@ -73,13 +73,19 @@ import (
 
 func main() {
     dictDir := "./data/en/dict.txt"
-	ac, _ := aho_corasick.LoadDict(dictDir)
-	pattern := "sdwdhjsfq.cfsadwd"
-
-	//text input replacement
-	ac.Replace(pattern, '*')
 	
-	ac.FindAll([]rune(pattern))
+    var ac aho_corasick.AC
+
+    if err := ac.LoadDict("./data/en/dict.txt"); err != nil {
+      panic(err)
+    }
+
+    pattern := "sdwdhjsfq.cfsadwd"
+  
+    //text input replacement
+    ac.Replace(pattern, '*')
+  
+    ac.FindAll([]rune(pattern))
 	
 }
 

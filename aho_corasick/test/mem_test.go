@@ -19,7 +19,9 @@ import (
 
 func Test_ACLoadEnDict(t *testing.T) {
 	start := time.Now().UnixNano()
-	ac, err := aho_corasick.LoadDict(enDictDir)
+	var ac aho_corasick.AC
+
+	err := ac.LoadDict(enDictDir)
 	//ac, err := aho_corasick.LoadDict("./../../data/SenstiveWord.txt")
 	assert.NoError(t, err)
 	fmt.Println(ac.Cap() * 8 * 3 / 1024 / 1024)
@@ -32,16 +34,15 @@ func Test_ACLoadEnDict(t *testing.T) {
 	ac.FindAll([]rune("sdwdhomoeysadwd"))
 	runtime.GC()
 	misc.PrintMem()
-	for {
-		time.Sleep(time.Minute)
-		ac.Replace(pattern, '*')
-		misc.PrintMem()
-	}
+	time.Sleep(time.Minute)
+	ac.Replace(pattern, '*')
+	misc.PrintMem()
 }
 
 func Test_ACLoadCnDict(t *testing.T) {
 	start := time.Now().UnixNano()
-	ac, err := aho_corasick.LoadDict(cnDictDir)
+	var ac aho_corasick.AC
+	err := ac.LoadDict(cnDictDir)
 	assert.NoError(t, err)
 	fmt.Println(ac.Cap())
 	pattern := "太阳翼漫无边际测试用例"

@@ -20,7 +20,8 @@ var (
 )
 
 func Benchmark_ACValidate(b *testing.B) {
-	ac, err := aho_corasick.LoadDict(dictDir)
+	var ac aho_corasick.AC
+	err := ac.LoadDict(dictDir)
 	assert.NoError(b, err)
 	in := []rune("dswkjdajcsnccawdlsd;adksfucksdwdsdwd")
 	fmt.Println(len(in))
@@ -35,7 +36,8 @@ func Benchmark_ACValidate(b *testing.B) {
 }
 
 func Benchmark_ACFindAll(b *testing.B) {
-	ac, err := aho_corasick.LoadDict(dictDir)
+	var ac aho_corasick.AC
+	err := ac.LoadDict(dictDir)
 	assert.NoError(b, err)
 	in := []rune(text)
 	fmt.Println(len(in))
@@ -49,7 +51,8 @@ func Benchmark_ACFindAll(b *testing.B) {
 }
 
 func Benchmark_ACReplace(b *testing.B) {
-	ac, err := aho_corasick.LoadDict(dictDir)
+	var ac aho_corasick.AC
+	err := ac.LoadDict(dictDir)
 	assert.NoError(b, err)
 	b.ReportAllocs()
 	b.ResetTimer()
@@ -61,7 +64,8 @@ func Benchmark_ACReplace(b *testing.B) {
 }
 
 func Benchmark_ACReplaceAll(b *testing.B) {
-	ac, err := aho_corasick.LoadDict(dictDir)
+	var ac aho_corasick.AC
+	err := ac.LoadDict(dictDir)
 	assert.NoError(b, err)
 	b.ReportAllocs()
 	b.ResetTimer()

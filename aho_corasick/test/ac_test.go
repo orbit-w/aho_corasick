@@ -69,7 +69,8 @@ func TestAC_MultiPatternSearch(t *testing.T) {
 }
 
 func Test_ACFindAll(t *testing.T) {
-	ac, err := aho_corasick.LoadDict(enDictDir)
+	var ac aho_corasick.AC
+	err := ac.LoadDict(enDictDir)
 	assert.NoError(t, err)
 	in := []rune(text)
 	res := ac.FindAll(in)
@@ -106,7 +107,9 @@ func Test_Replace(t *testing.T) {
 	fmt.Println(str1)
 	filter.FindAll(text)
 
-	ac, err := aho_corasick.LoadDict(enDictDir)
+	var ac aho_corasick.AC
+
+	err = ac.LoadDict(enDictDir)
 	assert.NoError(t, err)
 	//"outlearningsdwdsdoutgnawedsdwdsdad"
 	str2 := ac.Replace(text, '*')

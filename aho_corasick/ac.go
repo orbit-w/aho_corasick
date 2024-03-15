@@ -1,8 +1,11 @@
 package aho_corasick
 
 import (
+	"bufio"
 	"fmt"
 	"github.com/orbit-w/aho_corasick/lib/number_utils"
+	"io"
+	"os"
 	"sort"
 )
 
@@ -44,6 +47,33 @@ func New(keywords StrKeySlice) IAhoCorasick {
 	ins := new(AC)
 	ins.Build(keywords)
 	return ins
+}
+
+func (ins *AC) LoadDict(path string) error {
+	file, err := os.Open(path)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	return ins.loadFile(file)
+}
+
+func (ins *AC) loadFile(rd io.Reader) error {
+	buf := bufio.NewReader(rd)
+	sks := StrKeySlice{}
+	for {
+		line, _, err := buf.ReadLine()
+		if err != nil {
+			if err != io.EOF {
+				return err
+			}
+			break
+		}
+		sks = append(sks, []rune(string(line)))
+	}
+
+	ins.Build(sks)
+	return nil
 }
 
 func (ins *AC) Build(keywords StrKeySlice) {

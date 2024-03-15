@@ -1,9 +1,13 @@
 package aho_corasick
 
 import (
+	"bufio"
 	"fmt"
 	"github.com/orbit-w/aho_corasick/lib/math"
 	"github.com/orbit-w/aho_corasick/lib/number_utils"
+	"io"
+	"os"
+	"sort"
 )
 
 /*
@@ -17,6 +21,35 @@ type DAT struct {
 	cap   int   // 底层数据的真实容量
 	base  []int // 转移基数
 	check []int // dat 映射父子节点唯一关系性
+}
+
+func (ins *DAT) LoadDict(path string) error {
+	file, err := os.Open(path)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		_ = file.Close()
+	}()
+
+	buf := bufio.NewReader(file)
+	sks := StrKeySlice{}
+	for {
+		line, _, err := buf.ReadLine()
+		if err != nil {
+			if err != io.EOF {
+				return err
+			}
+			break
+		}
+		sks = append(sks, []rune(string(line)))
+	}
+
+	sort.Sort(sks)
+	trie := new(Trie)
+	trie.Build(sks)
+	ins.Build(trie)
+	return nil
 }
 
 func (ins *DAT) init() {

@@ -21,9 +21,11 @@ func main() {
 	PProf()
 	ch := make(chan os.Signal, 1)
 	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
-	ac, _ := aho_corasick.LoadDict("./data/en/dict.txt")
-	fmt.Println(ac.Cap())
-	ac.Replace("outlearningsdwdsdoutgnawedsdwdsdad", '*')
+	var ac aho_corasick.AC
+	if err := ac.LoadDict("./data/en/dict.txt"); err != nil {
+		panic(err)
+	}
+	fmt.Println(ac.Replace("outlearningsdwdsdoutgnawedsdwdsdad", '*'))
 
 	<-ch
 }
