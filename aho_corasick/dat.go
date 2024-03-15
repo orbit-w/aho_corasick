@@ -40,7 +40,7 @@ func (ins *DAT) Find(keyword []rune) bool {
 	var index int = IndexRoot
 	for _, r := range keyword {
 		i := ins.getState(index) + int(r)
-		if ins.check[i] != index {
+		if !ins.exist(i, index) {
 			return false
 		}
 		index = i
