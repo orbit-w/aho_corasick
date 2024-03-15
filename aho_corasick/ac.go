@@ -150,7 +150,7 @@ func (ins *AC) Replace(pattern string, repl rune) string {
 	index := IndexRoot
 	state := StateRoot
 	in := []rune(pattern)
-	m := len(pattern)
+	m := len(in)
 	for i := 0; i < m; i++ {
 		for j := i; j < m; j++ {
 			code := int(in[j])

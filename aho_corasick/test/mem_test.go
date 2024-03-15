@@ -34,7 +34,7 @@ func Test_ACLoadEnDict(t *testing.T) {
 	ac.FindAll([]rune("sdwdhomoeysadwd"))
 	runtime.GC()
 	misc.PrintMem()
-	time.Sleep(time.Minute)
+	time.Sleep(time.Second * 10)
 	ac.Replace(pattern, '*')
 	misc.PrintMem()
 }
@@ -50,7 +50,11 @@ func Test_ACLoadCnDict(t *testing.T) {
 	fmt.Println(misc.MSCast("AC", start))
 	fmt.Println(re)
 	runtime.GC()
-	ac.FindAll([]rune("太阳翼漫无边际测试用例"))
+	patterns := ac.FindAll([]rune("太阳翼漫无边际测试用例"))
+	for _, r := range patterns {
+		fmt.Println(string(r.Pattern))
+		fmt.Println(r.Start)
+	}
 	misc.PrintMem()
 }
 
