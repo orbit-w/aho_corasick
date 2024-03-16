@@ -1,9 +1,8 @@
-package test
+package aho_corasick
 
 import (
 	"fmt"
 	"github.com/importcjj/sensitive"
-	"github.com/orbit-w/aho_corasick/aho_corasick"
 	"github.com/orbit-w/aho_corasick/lib/misc"
 	"github.com/stretchr/testify/assert"
 	"runtime"
@@ -19,7 +18,7 @@ import (
 
 func Test_ACLoadEnDict(t *testing.T) {
 	start := time.Now().UnixNano()
-	var ac aho_corasick.AC
+	var ac AC
 
 	err := ac.LoadDict(enDictDir)
 	//ac, err := aho_corasick.LoadDict("./../../data/SenstiveWord.txt")
@@ -41,7 +40,7 @@ func Test_ACLoadEnDict(t *testing.T) {
 
 func Test_ACLoadCnDict(t *testing.T) {
 	start := time.Now().UnixNano()
-	var ac aho_corasick.AC
+	var ac AC
 	err := ac.LoadDict(cnDictDir)
 	assert.NoError(t, err)
 	fmt.Println(ac.Cap())

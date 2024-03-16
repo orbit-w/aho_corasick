@@ -1,9 +1,8 @@
-package test
+package aho_corasick
 
 import (
 	"fmt"
 	"github.com/importcjj/sensitive"
-	"github.com/orbit-w/aho_corasick/aho_corasick"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -16,13 +15,13 @@ import (
 
 var (
 	text      = "outlearningsdwdsdoutgnawedsdwdsdad"
-	enDictDir = "./../../data/en/dict.txt"
-	cnDictDir = "./../../data/cn/dict.txt"
+	enDictDir = "./../data/en/dict.txt"
+	cnDictDir = "./../data/cn/dict.txt"
 )
 
 // h: 104, e: 101, s: 115, r: 114, i: 105
 func TestAC_Fail(t *testing.T) {
-	ks := aho_corasick.StrKeySlice{
+	ks := StrKeySlice{
 		[]rune("he"),
 		[]rune("she"),
 		[]rune("hers"),
@@ -33,19 +32,19 @@ func TestAC_Fail(t *testing.T) {
 		fmt.Println(ks[i])
 	}
 
-	ac := aho_corasick.New(ks)
+	ac := New(ks)
 	ac.Print()
 }
 
 func TestAC_MultiPatternSearch(t *testing.T) {
-	ks := aho_corasick.StrKeySlice{
+	ks := StrKeySlice{
 		[]rune("he"),
 		[]rune("she"),
 		[]rune("hers"),
 		[]rune("his"),
 	}
 
-	ac := aho_corasick.New(ks)
+	ac := New(ks)
 	input := []rune("ahishers")
 	patterns := ac.FindAll(input)
 	for _, r := range patterns {
@@ -56,11 +55,11 @@ func TestAC_MultiPatternSearch(t *testing.T) {
 	fmt.Println("===================================================")
 	//中文模式串匹配
 	input = []rune("听说独立日日这部电影是美国人拍的")
-	ks = aho_corasick.StrKeySlice{
+	ks = StrKeySlice{
 		[]rune("独立"),
 		[]rune("独立日"),
 	}
-	ac = aho_corasick.New(ks)
+	ac = New(ks)
 	patterns = ac.FindAll(input)
 	for _, r := range patterns {
 		fmt.Println(string(r.Pattern))
@@ -69,7 +68,7 @@ func TestAC_MultiPatternSearch(t *testing.T) {
 }
 
 func Test_ACFindAll(t *testing.T) {
-	var ac aho_corasick.AC
+	var ac AC
 	err := ac.LoadDict(enDictDir)
 	assert.NoError(t, err)
 	in := []rune(text)
@@ -81,13 +80,13 @@ func Test_ACFindAll(t *testing.T) {
 }
 
 func Test_ACReplace(t *testing.T) {
-	ks := aho_corasick.StrKeySlice{
+	ks := StrKeySlice{
 		[]rune("he"),
 		[]rune("she"),
 		[]rune("hers"),
 		[]rune("his"),
 	}
-	ac := aho_corasick.New(ks)
+	ac := New(ks)
 	pattern := "ahisherssadwdshershis"
 	input := []rune(pattern)
 	for _, v := range ac.FindAll(input) {
@@ -107,7 +106,7 @@ func Test_Replace(t *testing.T) {
 	fmt.Println(str1)
 	filter.FindAll(text)
 
-	var ac aho_corasick.AC
+	var ac AC
 
 	err = ac.LoadDict(enDictDir)
 	assert.NoError(t, err)

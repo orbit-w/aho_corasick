@@ -1,8 +1,7 @@
-package test
+package aho_corasick
 
 import (
 	"fmt"
-	"github.com/orbit-w/aho_corasick/aho_corasick"
 	"sort"
 	"testing"
 )
@@ -14,7 +13,7 @@ import (
 */
 
 func TestDAT_Find(t *testing.T) {
-	ks := aho_corasick.StrKeySlice{
+	ks := StrKeySlice{
 		[]rune("hf"),
 		[]rune("he"),
 		[]rune("she"),
@@ -22,9 +21,9 @@ func TestDAT_Find(t *testing.T) {
 		[]rune("his"),
 	}
 	sort.Sort(ks)
-	trie := new(aho_corasick.Trie)
+	trie := new(Trie)
 	trie.Build(ks)
-	dat := new(aho_corasick.DAT)
+	dat := new(DAT)
 	dat.Build(trie)
 
 	fmt.Println(dat.Find([]rune("herss")))
@@ -40,19 +39,19 @@ func TestAC_AutomationInit(t *testing.T) {
 		{"中", "华"},
 		{"华", "人"},
 	}
-	ks := aho_corasick.StrKeySlice{}
+	ks := StrKeySlice{}
 
 	for _, keyword := range keywords {
-		dk := make(aho_corasick.StrKey, 0)
+		dk := make(StrKey, 0)
 		for _, k := range keyword {
 			dk = append(dk, toRune(k))
 		}
 		ks = append(ks, dk)
 	}
 	sort.Sort(ks)
-	trie := new(aho_corasick.Trie)
+	trie := new(Trie)
 	trie.Build(ks)
-	dat := new(aho_corasick.DAT)
+	dat := new(DAT)
 	dat.Build(trie)
 	dat.Print()
 }
@@ -64,7 +63,7 @@ func Test_Print(t *testing.T) {
 	fmt.Println('D')
 	fmt.Println('F')
 
-	ks := aho_corasick.StrKeySlice{
+	ks := StrKeySlice{
 		[]rune("AC"),
 		[]rune("ACE"),
 		[]rune("ACFF"),
