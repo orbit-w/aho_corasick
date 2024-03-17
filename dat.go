@@ -141,13 +141,6 @@ func (ins *DAT) setState(index, state int, isLeaf bool) {
 	}
 }
 
-func (ins *DAT) free(index int) bool {
-	if index >= ins.len {
-		return false
-	}
-	return ins.check[index] == 0
-}
-
 func (ins *DAT) Print() {
 	fmt.Println("Base: ", ins.base)
 	fmt.Println("Check: ", ins.check)

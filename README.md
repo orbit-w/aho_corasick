@@ -2,6 +2,8 @@
 AC automaton, the algorithm uses DAT(double array trie) to construct a finite-state machine and combined the concept of KMP to construct a mismatch pointer.
 It is a kind of dictionary-matching algorithm that locates elements of a finite set of strings (the "dictionary") within an input text. It matches all strings simultaneously.
 
+[![codecov](https://codecov.io/gh/orbit-w/aho_corasick/graph/badge.svg?token=6LYVYO4EAL)](https://codecov.io/gh/orbit-w/aho_corasick)
+
 ## Comparison:
 硬件信息 MacAir Apple M2, 在文本处理能力和内存占用两方面跟传统字典 trie 做了比较:
 

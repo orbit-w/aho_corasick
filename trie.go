@@ -1,7 +1,5 @@
 package aho_corasick
 
-import "fmt"
-
 /*
    @Author: orbit-w
    @File: trie
@@ -134,25 +132,4 @@ func (ins *Trie) DFS(iter func(node *Node) bool) {
 
 func (ins *Trie) Free() {
 	ins.root = nil
-}
-
-func (ins *Trie) Print() {
-	ins.BFS(func(node *Node) bool {
-		if node.Root() {
-			return false
-		}
-		fmt.Print("code: ", node.code)
-		fmt.Println("fail code: ", node.fail.code)
-		return false
-	})
-}
-
-func printTree(node *Node, lv int) {
-	for i := 0; i < lv; i++ {
-		fmt.Print("  ")
-	}
-	fmt.Println(string(node.code))
-	for _, child := range node.children {
-		printTree(child, lv+1)
-	}
 }
