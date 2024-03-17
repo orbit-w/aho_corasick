@@ -15,8 +15,8 @@ import (
 
 var (
 	text      = "outlearningsdwdsdoutgnawedsdwdsdad"
-	enDictDir = "./../data/en/dict.txt"
-	cnDictDir = "./../data/cn/dict.txt"
+	enDictDir = "./data/en/dict.txt"
+	cnDictDir = "./data/cn/dict.txt"
 )
 
 // h: 104, e: 101, s: 115, r: 114, i: 105

@@ -3,7 +3,7 @@ package benchmark
 import (
 	"fmt"
 	"github.com/importcjj/sensitive"
-	"github.com/orbit-w/aho_corasick/aho_corasick"
+	"github.com/orbit-w/aho_corasick"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
