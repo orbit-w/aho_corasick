@@ -13,16 +13,6 @@ import (
 type StrKey []rune
 type StrKeySlice []StrKey
 
-func (ins StrKeySlice) Max() (max int) {
-	for i := range ins {
-		l := len(ins[i])
-		if l > 0 && l > max {
-			max = l
-		}
-	}
-	return
-}
-
 func (ins StrKeySlice) Len() int {
 	return len(ins)
 }

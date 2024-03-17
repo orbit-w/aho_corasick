@@ -27,10 +27,6 @@ func (ins *Node) findChild(r rune) *Node {
 	return nil
 }
 
-func (ins *Node) addChild(child *Node) {
-	ins.children = append(ins.children, child)
-}
-
 func (ins *Node) Root() bool {
 	return ins.isRoot
 }
