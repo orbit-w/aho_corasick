@@ -31,14 +31,6 @@ func (ins *Output) Exist() bool {
 	return len(ins.words) > 0
 }
 
-func (ins *Output) Rep(i int, iter func(index int)) {
-	for _, w := range ins.words {
-		for j := i - (int(w.Len) - 1); j <= i; j++ {
-			iter(j)
-		}
-	}
-}
-
 type Word struct {
 	Len rune
 }

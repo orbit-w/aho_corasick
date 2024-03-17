@@ -17,6 +17,9 @@ func Test_DATLoadFile(t *testing.T) {
 	var dat DAT
 	err := dat.LoadDict(enDictDir)
 	assert.NoError(t, err)
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	assert.True(t, dat.Find([]rune("whity")))
 }
@@ -112,6 +115,7 @@ func Test_DATLenAndCap(t *testing.T) {
 	dat.Build(trie)
 	fmt.Println(dat.Length())
 	fmt.Println(dat.Cap())
+	assert.False(t, dat.exist(1000, 0))
 }
 
 func toRune(s string) rune {

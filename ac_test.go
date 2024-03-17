@@ -67,9 +67,25 @@ func TestAC_MultiPatternSearch(t *testing.T) {
 	}
 }
 
+func Test_ACValidate(t *testing.T) {
+	ks := StrKeySlice{
+		[]rune("he"),
+		[]rune("she"),
+		[]rune("hers"),
+		[]rune("his"),
+	}
+
+	ac := New(ks)
+	input := []rune("ahishers")
+	assert.False(t, ac.Validate(input))
+}
+
 func Test_ACFindAll(t *testing.T) {
 	var ac AC
 	err := ac.LoadDict(enDictDir)
+	if err != nil {
+		fmt.Println(err)
+	}
 	assert.NoError(t, err)
 	in := []rune(text)
 	res := ac.FindAll(in)

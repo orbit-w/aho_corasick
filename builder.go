@@ -81,10 +81,3 @@ func (ins *DATBuilder) heuristicFunc() func(pos int) {
 		}
 	}
 }
-
-func (ins *DATBuilder) dive(dep int) {
-	ins.depth = dep
-	ins.max = number_utils.Max[int](ins.max, ins.cursor)
-	ins.cursor = 0
-	ins.depth = dep
-}
